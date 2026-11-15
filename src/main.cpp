@@ -17,79 +17,10 @@
 #include "PositionKey.h"
 #include "GameData.h"
 #include "SaveManager.h"
+#include "BoardRenderer.h"
 
 using namespace sf;
 using namespace std;
-
-void drawCoordinates(
-    RenderWindow& window,
-    Font& font,
-    float squareSize,
-    float startX,
-    float startY
-) {
-    for (int i = 0; i < 8; i++) {
-        Color coordinateColor = (i % 2 == 0)
-            ? Color(181, 136, 99)
-            : Color(240, 217, 181);
-
-        Text rank(font, to_string(8 - i), 14);
-
-        rank.setFillColor(coordinateColor);
-        rank.setPosition({
-            startX + 4,
-            startY + i * squareSize + 2
-        });
-
-        window.draw(rank);
-
-        Text file(font, string(1, 'a' + i), 14);
-
-        file.setFillColor(
-            i % 2 == 0
-            ? Color(240, 217, 181)
-            : Color(181, 136, 99)
-        );
-
-        file.setPosition({
-            startX + (i + 1) * squareSize - 18,
-            startY + 8 * squareSize - 18
-        });
-
-        window.draw(file);
-    }
-}
-
-void drawCapturedPieces(
-    RenderWindow& window,
-    vector<char>& capturedPieces,
-    PieceTextures& textures,
-    float startX,
-    float startY
-) {
-    const float pieceSize = 30.0f;
-    const float spacing = 36.0f;
-    const int piecesPerRow = 9;
-
-    for (int i = 0; i < capturedPieces.size(); i++) {
-        Sprite pieceSprite(textures.whiteKing);
-
-        pieceSprite.setTexture(getPieceTexture(capturedPieces[i], textures));
-
-        int row = i / piecesPerRow;
-        int col = i % piecesPerRow;
-
-        pieceSprite.setPosition({
-            startX + col * spacing,
-            startY + row * 30.0f
-        });
-
-        float scale = pieceSize / 100.0f;
-        pieceSprite.setScale({ scale, scale });
-
-        window.draw(pieceSprite);
-    }
-}
 
 int getPieceValue(char piece) {
     switch (tolower(static_cast<unsigned char>(piece))) {
@@ -229,19 +160,6 @@ int main() {
     positionOccurrences[getPositionKey(board, whiteTurn)] = 1;
 
     bool showLoadConfirmation = false;
-
-    RectangleShape square(Vector2f(squareSize, squareSize));
-
-    RectangleShape highlight(Vector2f(squareSize, squareSize));
-    highlight.setFillColor(Color(255, 255, 0, 100));
-
-    CircleShape moveDot(8.0f);
-    moveDot.setFillColor(Color(100, 100, 100, 150));
-
-    CircleShape captureRing(squareSize / 2 - 5);
-    captureRing.setFillColor(Color::Transparent);
-    captureRing.setOutlineThickness(5);
-    captureRing.setOutlineColor(Color(100, 100, 100, 150));
 
     PieceTextures textures;
     loadPieceTextures(textures);
@@ -1056,49 +974,18 @@ int main() {
             window.draw(scrollbarThumb);
         }
 
-        for (int row = 0; row < boardSize; row++) {
-            for (int col = 0; col < boardSize; col++) {
-                float x = startX + col * squareSize;
-                float y = startY + row * squareSize;
-
-                square.setPosition({ x, y });
-
-                if ((row + col) % 2 == 0)
-                    square.setFillColor(Color(240, 217, 181));
-                else
-                    square.setFillColor(Color(181, 136, 99));
-
-                window.draw(square);
-            }
-        }
-
-        if (isPieceSelected) {
-            float x = startX + selectedCol * squareSize;
-            float y = startY + selectedRow * squareSize;
-
-            highlight.setPosition({ x, y });
-            window.draw(highlight);
-        }
-
-        for (const Move& move : possibleMoves) {
-            float x = startX + move.toCol * squareSize;
-            float y = startY + move.toRow * squareSize;
-
-            if (board.squares[move.toRow][move.toCol] == '.') {
-                moveDot.setPosition({
-                    x + squareSize / 2 - 8,
-                    y + squareSize / 2 - 8
-                });
-
-                window.draw(moveDot);
-            }
-            else {
-                captureRing.setPosition({ x + 5, y + 5 });
-                window.draw(captureRing);
-            }
-        }
-
-        drawPieces(window, board, textures, squareSize, startX, startY);
+        BoardRenderer::drawBoard(
+            window,
+            board,
+            textures,
+            possibleMoves,
+            isPieceSelected,
+            selectedRow,
+            selectedCol,
+            squareSize,
+            startX,
+            startY
+        );
 
         int materialDifference = whiteMaterial - blackMaterial;
 
@@ -1121,7 +1008,7 @@ int main() {
         window.draw(blackAdvantageText);
         window.draw(whiteAdvantageText);
 
-        drawCapturedPieces(
+        BoardRenderer::drawCapturedPieces(
             window,
             whiteCapturedPieces,
             textures,
@@ -1129,7 +1016,7 @@ int main() {
             725.0f
         );
 
-        drawCapturedPieces(
+        BoardRenderer::drawCapturedPieces(
             window,
             blackCapturedPieces,
             textures,
@@ -1137,7 +1024,13 @@ int main() {
             25.0f
         );
 
-        drawCoordinates(window, font, squareSize, startX, startY);
+        BoardRenderer::drawCoordinates(
+            window,
+            font,
+            squareSize,
+            startX,
+            startY
+        );
 
         if (showLoadConfirmation) {
             window.draw(confirmationOverlay);
