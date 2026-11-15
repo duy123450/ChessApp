@@ -18,6 +18,7 @@
 #include "MoveNotation.h"
 #include "GameState.h"
 #include "PositionKey.h"
+#include "GameData.h"
 
 using namespace sf;
 using namespace std;
@@ -195,75 +196,6 @@ void addMoveToHistory(
             moveHistory.back().second = notation;
     }
 }
-
-struct SavedGameData {
-    Board board;
-
-    bool whiteTurn = true;
-
-    vector<char> whiteCapturedPieces;
-    vector<char> blackCapturedPieces;
-
-    vector<pair<string, string>> moveHistory;
-
-    unordered_map<string, int> positionOccurrences;
-
-    bool isPromotionPending = false;
-    bool promotionIsWhite = false;
-
-    int promotionRow = -1;
-    int promotionCol = -1;
-
-    Move pendingMove{};
-
-    char pendingMovedPiece = '.';
-    char pendingCapturedPiece = '.';
-
-    bool pendingIsEnPassant = false;
-};
-
-struct GameData {
-    Board board;
-
-    unordered_map<string, int> positionOccurrences;
-
-    bool isPieceSelected = false;
-    int selectedRow = -1;
-    int selectedCol = -1;
-
-    vector<Move> possibleMoves;
-
-    vector<char> whiteCapturedPieces;
-    vector<char> blackCapturedPieces;
-
-    vector<pair<string, string>> moveHistory;
-
-    int historyScrollOffset = 0;
-    int previousMoveCount = 0;
-
-    bool isDraggingScrollbar = false;
-    float scrollbarDragOffset = 0.0f;
-
-    int whiteMaterial = 0;
-    int blackMaterial = 0;
-
-    bool gameOver = false;
-    bool saveFileCleared = false;
-    bool whiteTurn = true;
-
-    bool isPromotionPending = false;
-    bool promotionIsWhite = false;
-
-    int promotionRow = -1;
-    int promotionCol = -1;
-
-    Move pendingMove{};
-
-    char pendingMovedPiece = '.';
-    char pendingCapturedPiece = '.';
-
-    bool pendingIsEnPassant = false;
-};
 
 void resetGame(GameData& game) {
     game.board = Board();
