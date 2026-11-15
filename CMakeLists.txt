@@ -14,7 +14,8 @@ add_executable(ChessApp
     src/MoveNotation.cpp
     src/GameState.cpp
     src/SaveManager.cpp
- )
+    src/BoardRenderer.cpp
+)
 
 target_link_libraries(ChessApp PRIVATE
     SFML::Graphics
