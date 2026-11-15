@@ -46,6 +46,10 @@ void addMoveToHistory(
 
 Game::Game(GameData& gameData)
     : data(gameData) {
+
+    data.positionOccurrences[
+        getPositionKey(data.board, data.whiteTurn)
+    ] = 1;
 }
 
 void Game::reset() {
