@@ -1,0 +1,29 @@
+
+# Build directories
+build/
+build-*/
+cmake-build-*/
+
+# Visual Studio
+.vs/
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.pdb
+*.ilk
+*.obj
+*.exe
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Game save data
+saved_game.txt
+
+# OS files
+.DS_Store
+Thumbs.db
