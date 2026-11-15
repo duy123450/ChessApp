@@ -16,6 +16,7 @@ add_executable(ChessApp
     src/SaveManager.cpp
     src/BoardRenderer.cpp
     src/UI.cpp
+    src/Game.cpp
 )
 
 target_link_libraries(ChessApp PRIVATE
