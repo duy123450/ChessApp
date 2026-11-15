@@ -13,7 +13,8 @@ add_executable(ChessApp
     src/MoveValidator.cpp
     src/MoveNotation.cpp
     src/GameState.cpp
-)
+    src/SaveManager.cpp
+ )
 
 target_link_libraries(ChessApp PRIVATE
     SFML::Graphics
