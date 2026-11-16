@@ -2,7 +2,8 @@
 #include <cstdlib>
 
 // Main movement dispatcher
-bool isValidMove(const Board& board, const Move& move) {
+bool isValidMove(const Board &board, const Move &move)
+{
     int fromRow = move.fromRow;
     int fromCol = move.fromCol;
     int toRow = move.toRow;
@@ -13,8 +14,7 @@ bool isValidMove(const Board& board, const Move& move) {
         fromRow < 0 || fromRow >= 8 ||
         fromCol < 0 || fromCol >= 8 ||
         toRow < 0 || toRow >= 8 ||
-        toCol < 0 || toCol >= 8
-        )
+        toCol < 0 || toCol >= 8)
         return false;
 
     char piece = board.squares[fromRow][fromCol];
@@ -43,7 +43,8 @@ bool isValidMove(const Board& board, const Move& move) {
     if ((piece == 'K' || piece == 'k') &&
         move.fromCol == 4 &&
         move.toRow == move.fromRow &&
-        abs(move.toCol - move.fromCol) == 2) {
+        abs(move.toCol - move.fromCol) == 2)
+    {
 
         return isCastlingMoveValid(board, move, isWhite);
     }
@@ -51,39 +52,40 @@ bool isValidMove(const Board& board, const Move& move) {
     // Check the piece's movement pattern
     bool movePatternValid = false;
 
-    switch (piece) {
-        case 'P':
-        case 'p':
-            movePatternValid = isPawnMoveValid(board, move, isWhite);
-            break;
+    switch (piece)
+    {
+    case 'P':
+    case 'p':
+        movePatternValid = isPawnMoveValid(board, move, isWhite);
+        break;
 
-        case 'R':
-        case 'r':
-            movePatternValid = isRookMoveValid(board, move);
-            break;
+    case 'R':
+    case 'r':
+        movePatternValid = isRookMoveValid(board, move);
+        break;
 
-        case 'B':
-        case 'b':
-            movePatternValid = isBishopMoveValid(board, move);
-            break;
+    case 'B':
+    case 'b':
+        movePatternValid = isBishopMoveValid(board, move);
+        break;
 
-        case 'Q':
-        case 'q':
-            movePatternValid = isQueenMoveValid(board, move);
-            break;
+    case 'Q':
+    case 'q':
+        movePatternValid = isQueenMoveValid(board, move);
+        break;
 
-        case 'N':
-        case 'n':
-            movePatternValid = isKnightMoveValid(board, move);
-            break;
+    case 'N':
+    case 'n':
+        movePatternValid = isKnightMoveValid(board, move);
+        break;
 
-        case 'K':
-        case 'k':
-            movePatternValid = isKingMoveValid(board, move);
-            break;
+    case 'K':
+    case 'k':
+        movePatternValid = isKingMoveValid(board, move);
+        break;
 
-        default:
-            return false;
+    default:
+        return false;
     }
 
     if (!movePatternValid)
@@ -116,9 +118,12 @@ bool isValidMove(const Board& board, const Move& move) {
 }
 
 // Check for legal move
-bool hasAnyLegalMove(const Board& board, bool isWhite) {
-    for (int fromRow = 0; fromRow < 8; fromRow++) {
-        for (int fromCol = 0; fromCol < 8; fromCol++) {
+bool hasAnyLegalMove(const Board &board, bool isWhite)
+{
+    for (int fromRow = 0; fromRow < 8; fromRow++)
+    {
+        for (int fromCol = 0; fromCol < 8; fromCol++)
+        {
             char piece = board.squares[fromRow][fromCol];
 
             if (piece == '.')
@@ -130,14 +135,15 @@ bool hasAnyLegalMove(const Board& board, bool isWhite) {
                 continue;
 
             // Try every possible destination
-            for (int toRow = 0; toRow < 8; toRow++) {
-                for (int toCol = 0; toCol < 8; toCol++) {
+            for (int toRow = 0; toRow < 8; toRow++)
+            {
+                for (int toCol = 0; toCol < 8; toCol++)
+                {
                     Move move{
                         fromRow,
                         fromCol,
                         toRow,
-                        toCol
-                    };
+                        toCol};
 
                     if (isValidMove(board, move))
                         return true;
@@ -150,7 +156,8 @@ bool hasAnyLegalMove(const Board& board, bool isWhite) {
 }
 
 // Check whether the path between two squares is clear
-bool isPathClear(const Board& board, const Move& move) {
+bool isPathClear(const Board &board, const Move &move)
+{
     int fromRow = move.fromRow;
     int fromCol = move.fromCol;
     int toRow = move.toRow;
@@ -175,7 +182,8 @@ bool isPathClear(const Board& board, const Move& move) {
     int col = fromCol + colDirection;
 
     // Check every square before the destination
-    while (row != toRow || col != toCol) {
+    while (row != toRow || col != toCol)
+    {
         if (board.squares[row][col] != '.')
             return false;
 
@@ -187,7 +195,8 @@ bool isPathClear(const Board& board, const Move& move) {
 }
 
 // Pawn movement
-bool isPawnMoveValid(const Board& board, const Move& move, bool isWhite) {
+bool isPawnMoveValid(const Board &board, const Move &move, bool isWhite)
+{
     int direction = isWhite ? -1 : 1;
     int startingRow = isWhite ? 6 : 1;
 
@@ -205,8 +214,7 @@ bool isPawnMoveValid(const Board& board, const Move& move, bool isWhite) {
     if (
         target == '.' &&
         rowDistance == direction &&
-        colDistance == 0
-        )
+        colDistance == 0)
         return true;
 
     // Move forward two squares from starting position
@@ -215,8 +223,7 @@ bool isPawnMoveValid(const Board& board, const Move& move, bool isWhite) {
         fromRow == startingRow &&
         rowDistance == 2 * direction &&
         colDistance == 0 &&
-        board.squares[fromRow + direction][fromCol] == '.'
-        )
+        board.squares[fromRow + direction][fromCol] == '.')
         return true;
 
     // En passant capture
@@ -224,7 +231,8 @@ bool isPawnMoveValid(const Board& board, const Move& move, bool isWhite) {
         move.toRow == move.fromRow + direction &&
         board.squares[move.toRow][move.toCol] == '.' &&
         move.fromRow == board.enPassantRow &&
-        move.toCol == board.enPassantCol) {
+        move.toCol == board.enPassantCol)
+    {
 
         char capturedPawn = isWhite ? 'p' : 'P';
 
@@ -236,15 +244,15 @@ bool isPawnMoveValid(const Board& board, const Move& move, bool isWhite) {
     if (
         target != '.' &&
         rowDistance == direction &&
-        (colDistance == 1 || colDistance == -1)
-        )
+        (colDistance == 1 || colDistance == -1))
         return true;
 
     return false;
 }
 
 // Rook movement
-bool isRookMoveValid(const Board& board, const Move& move) {
+bool isRookMoveValid(const Board &board, const Move &move)
+{
     // Rook can only move horizontally or vertically
     if (move.fromRow != move.toRow &&
         move.fromCol != move.toCol)
@@ -254,7 +262,8 @@ bool isRookMoveValid(const Board& board, const Move& move) {
 }
 
 // Bishop movement
-bool isBishopMoveValid(const Board& board, const Move& move) {
+bool isBishopMoveValid(const Board &board, const Move &move)
+{
     int rowDistance = abs(move.toRow - move.fromRow);
     int colDistance = abs(move.toCol - move.fromCol);
 
@@ -266,12 +275,14 @@ bool isBishopMoveValid(const Board& board, const Move& move) {
 }
 
 // Queen movement
-bool isQueenMoveValid(const Board& board, const Move& move) {
+bool isQueenMoveValid(const Board &board, const Move &move)
+{
     return isRookMoveValid(board, move) || isBishopMoveValid(board, move);
 }
 
 // Knight movement
-bool isKnightMoveValid(const Board& board, const Move& move) {
+bool isKnightMoveValid(const Board &board, const Move &move)
+{
     int rowDistance = abs(move.toRow - move.fromRow);
     int colDistance = abs(move.toCol - move.fromCol);
 
@@ -281,12 +292,16 @@ bool isKnightMoveValid(const Board& board, const Move& move) {
 
 // King movement
 //// Find where the King is
-bool findKing(const Board& board, bool isWhite, int& kingRow, int& kingCol) {
+bool findKing(const Board &board, bool isWhite, int &kingRow, int &kingCol)
+{
     char king = isWhite ? 'K' : 'k';
 
-    for (int row = 0; row < 8; row++) {
-        for (int col = 0; col < 8; col++) {
-            if (board.squares[row][col] == king) {
+    for (int row = 0; row < 8; row++)
+    {
+        for (int col = 0; col < 8; col++)
+        {
+            if (board.squares[row][col] == king)
+            {
                 kingRow = row;
                 kingCol = col;
 
@@ -299,7 +314,8 @@ bool findKing(const Board& board, bool isWhite, int& kingRow, int& kingCol) {
 }
 
 //// Validate if the King is in Check
-bool isKingInCheck(const Board& board, bool isWhite) {
+bool isKingInCheck(const Board &board, bool isWhite)
+{
     int kingRow;
     int kingCol;
 
@@ -308,8 +324,10 @@ bool isKingInCheck(const Board& board, bool isWhite) {
         return false;
 
     // Check every square for an opponent's piece
-    for (int row = 0; row < 8; row++) {
-        for (int col = 0; col < 8; col++) {
+    for (int row = 0; row < 8; row++)
+    {
+        for (int col = 0; col < 8; col++)
+        {
             char piece = board.squares[row][col];
 
             if (piece == '.')
@@ -325,51 +343,50 @@ bool isKingInCheck(const Board& board, bool isWhite) {
                 row,
                 col,
                 kingRow,
-                kingCol
-            };
+                kingCol};
 
-            switch (piece) {
-                // Pawn attacks diagonally
-                case 'P':
-                case 'p':
-                    if (
-                        abs(kingCol - col) == 1 &&
-                        ((attackerIsWhite && kingRow == row - 1) ||
-                            (!attackerIsWhite && kingRow == row + 1))
-                        )
-                        return true;
+            switch (piece)
+            {
+            // Pawn attacks diagonally
+            case 'P':
+            case 'p':
+                if (
+                    abs(kingCol - col) == 1 &&
+                    ((attackerIsWhite && kingRow == row - 1) ||
+                     (!attackerIsWhite && kingRow == row + 1)))
+                    return true;
 
-                    break;
+                break;
 
-                case 'R':
-                case 'r':
-                    if (isRookMoveValid(board, move))
-                        return true;
-                    break;
+            case 'R':
+            case 'r':
+                if (isRookMoveValid(board, move))
+                    return true;
+                break;
 
-                case 'B':
-                case 'b':
-                    if (isBishopMoveValid(board, move))
-                        return true;
-                    break;
+            case 'B':
+            case 'b':
+                if (isBishopMoveValid(board, move))
+                    return true;
+                break;
 
-                case 'Q':
-                case 'q':
-                    if (isQueenMoveValid(board, move))
-                        return true;
-                    break;
+            case 'Q':
+            case 'q':
+                if (isQueenMoveValid(board, move))
+                    return true;
+                break;
 
-                case 'N':
-                case 'n':
-                    if (isKnightMoveValid(board, move))
-                        return true;
-                    break;
+            case 'N':
+            case 'n':
+                if (isKnightMoveValid(board, move))
+                    return true;
+                break;
 
-                case 'K':
-                case 'k':
-                    if (isKingMoveValid(board, move))
-                        return true;
-                    break;
+            case 'K':
+            case 'k':
+                if (isKingMoveValid(board, move))
+                    return true;
+                break;
             }
         }
     }
@@ -377,7 +394,8 @@ bool isKingInCheck(const Board& board, bool isWhite) {
     return false;
 }
 
-bool isCastlingMoveValid(const Board& board, const Move& move, bool isWhite) {
+bool isCastlingMoveValid(const Board &board, const Move &move, bool isWhite)
+{
     int row = isWhite ? 7 : 0;
 
     char king = isWhite ? 'K' : 'k';
@@ -408,14 +426,16 @@ bool isCastlingMoveValid(const Board& board, const Move& move, bool isWhite) {
         return false;
 
     // Rook must not have moved before
-    if (isWhite) {
+    if (isWhite)
+    {
         if (isKingside && board.whiteKingsideRookMoved)
             return false;
 
         if (isQueenside && board.whiteQueensideRookMoved)
             return false;
     }
-    else {
+    else
+    {
         if (isKingside && board.blackKingsideRookMoved)
             return false;
 
@@ -427,7 +447,8 @@ bool isCastlingMoveValid(const Board& board, const Move& move, bool isWhite) {
     int startCol = isKingside ? 5 : 1;
     int endCol = isKingside ? 6 : 3;
 
-    for (int col = startCol; col <= endCol; col++) {
+    for (int col = startCol; col <= endCol; col++)
+    {
         if (board.squares[row][col] != '.')
             return false;
     }
@@ -464,7 +485,8 @@ bool isCastlingMoveValid(const Board& board, const Move& move, bool isWhite) {
     return true;
 }
 
-bool isKingMoveValid(const Board& board, const Move& move) {
+bool isKingMoveValid(const Board &board, const Move &move)
+{
     int rowDistance = abs(move.toRow - move.fromRow);
     int colDistance = abs(move.toCol - move.fromCol);
 

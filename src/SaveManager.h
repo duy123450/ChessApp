@@ -3,11 +3,12 @@
 
 #include "GameData.h"
 
-class SaveManager {
+class SaveManager
+{
 public:
     static void clearSavedGame();
-    static void saveGame(const GameData& game);
-    static bool loadGame(GameData& game);
+    static void saveGame(const GameData &game);
+    static bool loadGame(GameData &game);
 };
 
 #endif

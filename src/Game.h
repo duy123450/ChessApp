@@ -4,12 +4,13 @@
 
 #include "GameData.h"
 
-class Game {
+class Game
+{
 private:
-    GameData& data;
+    GameData &data;
 
 public:
-    Game(GameData& gameData);
+    Game(GameData &gameData);
 
     void reset();
 

@@ -3,14 +3,15 @@
 string getMoveNotation(
     char piece,
     char target,
-    const Move& move,
-    const GameState& state,
-    bool isEnPassant
-) {
+    const Move &move,
+    const GameState &state,
+    bool isEnPassant)
+{
     // Castling notation
     if ((piece == 'K' || piece == 'k') &&
         move.fromCol == 4 &&
-        move.fromRow == move.toRow) {
+        move.fromRow == move.toRow)
+    {
 
         if (move.toCol == 6)
             return "O-O";
@@ -22,17 +23,28 @@ string getMoveNotation(
     string notation;
 
     // Piece letter
-    switch (piece) {
+    switch (piece)
+    {
     case 'K':
-    case 'k': notation += 'K'; break;
+    case 'k':
+        notation += 'K';
+        break;
     case 'Q':
-    case 'q': notation += 'Q'; break;
+    case 'q':
+        notation += 'Q';
+        break;
     case 'R':
-    case 'r': notation += 'R'; break;
+    case 'r':
+        notation += 'R';
+        break;
     case 'B':
-    case 'b': notation += 'B'; break;
+    case 'b':
+        notation += 'B';
+        break;
     case 'N':
-    case 'n': notation += 'N'; break;
+    case 'n':
+        notation += 'N';
+        break;
     }
 
     bool isCapture = target != '.' || isEnPassant;

@@ -1,7 +1,8 @@
 #include "GameState.h"
 #include "MoveValidator.h"
 
-bool hasInsufficientMaterial(const Board& board) {
+bool hasInsufficientMaterial(const Board &board)
+{
     int bishopCount = 0;
     int knightCount = 0;
     int otherPieceCount = 0;
@@ -9,14 +10,17 @@ bool hasInsufficientMaterial(const Board& board) {
     int bishopColor = -1;
     bool bishopsSameColor = true;
 
-    for (int row = 0; row < 8; row++) {
-        for (int col = 0; col < 8; col++) {
+    for (int row = 0; row < 8; row++)
+    {
+        for (int col = 0; col < 8; col++)
+        {
             char piece = board.squares[row][col];
 
             if (piece == '.' || piece == 'K' || piece == 'k')
                 continue;
 
-            if (piece == 'B' || piece == 'b') {
+            if (piece == 'B' || piece == 'b')
+            {
                 bishopCount++;
 
                 int currentColor = (row + col) % 2;
@@ -47,14 +51,16 @@ bool hasInsufficientMaterial(const Board& board) {
     if (bishopCount == 2 &&
         knightCount == 0 &&
         otherPieceCount == 0 &&
-        bishopsSameColor) {
+        bishopsSameColor)
+    {
         return true;
     }
 
     return false;
 }
 
-GameState getGameState(const Board& board, bool isWhite) {
+GameState getGameState(const Board &board, bool isWhite)
+{
     GameState state;
 
     state.isCheck = isKingInCheck(board, isWhite);
@@ -69,9 +75,9 @@ GameState getGameState(const Board& board, bool isWhite) {
     state.isDrawBySeventyFiveMoveRule = board.halfMoveClock >= 150 && !state.isCheckmate;
 
     state.isGameOver = state.isCheckmate ||
-        state.isStalemate ||
-        state.isDrawByInsufficientMaterial ||
-        state.isDrawBySeventyFiveMoveRule;
+                       state.isStalemate ||
+                       state.isDrawByInsufficientMaterial ||
+                       state.isDrawBySeventyFiveMoveRule;
 
     return state;
 }

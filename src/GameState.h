@@ -2,7 +2,8 @@
 
 #include "Board.h"
 
-struct GameState {
+struct GameState
+{
     bool isCheck = false;
     bool isCheckmate = false;
     bool isStalemate = false;
@@ -12,6 +13,6 @@ struct GameState {
     bool isGameOver = false;
 };
 
-GameState getGameState(const Board& board, bool isWhite);
+GameState getGameState(const Board &board, bool isWhite);
 
-bool hasInsufficientMaterial(const Board& board);
+bool hasInsufficientMaterial(const Board &board);

@@ -6,10 +6,11 @@
 
 #include "GameData.h"
 
-class UI {
+class UI
+{
 private:
     // Font reference
-    sf::Font& font;
+    sf::Font &font;
 
     // Player information
     sf::Text blackPlayerText;
@@ -52,23 +53,20 @@ private:
     sf::Text cancelLoadText;
 
 public:
-    UI(sf::Font& font);
+    UI(sf::Font &font);
 
     void drawPanelsAndHistory(
-        sf::RenderWindow& window,
-        const GameData& game,
-        int visibleRows
-    );
+        sf::RenderWindow &window,
+        const GameData &game,
+        int visibleRows);
 
     void drawPlayerInfo(
-        sf::RenderWindow& window,
-        const GameData& game
-    );
+        sf::RenderWindow &window,
+        const GameData &game);
 
     void drawLoadConfirmation(
-        sf::RenderWindow& window,
-        bool showLoadConfirmation
-    );
+        sf::RenderWindow &window,
+        bool showLoadConfirmation);
 };
 
 #endif
