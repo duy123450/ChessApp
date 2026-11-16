@@ -160,6 +160,13 @@ int main()
                             showLoadConfirmation = true;
                         }
 
+                        // Claim Draw button
+                        if (ui.isClaimDrawButtonClicked(mouseX, mouseY))
+                        {
+                            gameController.handleDrawClaim('D');
+                            gameController.handleDrawClaim('T');
+                        }
+
                         // Scrollbar click and drag
                         int totalRows = static_cast<int>(game.moveHistory.size());
 
@@ -368,6 +375,7 @@ int main()
             startY);
 
         ui.drawPlayerInfo(window, game);
+        ui.drawClaimDrawButton(window);
 
         BoardRenderer::drawCapturedPieces(
             window,

@@ -27,6 +27,9 @@ UI::UI(Font &font)
       loadGameButton(Vector2f(110.0f, 40.0f)),
       loadGameButtonText(font, "Load Game", 17),
 
+      claimDrawButton(Vector2f(130.0f, 40.0f)),
+      claimDrawButtonText(font, "Claim Draw", 16),
+
       moveHistoryTitle(font, "Move History", 28),
       moveNumberHeader(font, "No.", 18),
       whiteMoveHeader(font, "White", 18),
@@ -128,6 +131,14 @@ UI::UI(Font &font)
     loadGameButtonText.setStyle(Text::Bold);
     loadGameButtonText.setFillColor(Color::White);
     loadGameButtonText.setPosition({890.0f, 630.0f});
+
+    // Draw claim button
+    claimDrawButton.setPosition({ 620.0f, 675.0f });
+    claimDrawButton.setFillColor(Color(90, 90, 90));
+
+    claimDrawButtonText.setStyle(Text::Bold);
+    claimDrawButtonText.setFillColor(Color::White);
+    claimDrawButtonText.setPosition({ 635.0f, 683.0f });
 
     // Move history headers
     moveHistoryTitle.setStyle(Text::Bold);
@@ -428,4 +439,17 @@ char UI::handlePromotionClick(float mouseX, float mouseY)
     }
 
     return '.';
+}
+
+void UI::drawClaimDrawButton(RenderWindow& window)
+{
+    window.draw(claimDrawButton);
+    window.draw(claimDrawButtonText);
+}
+
+bool UI::isClaimDrawButtonClicked(float mouseX, float mouseY)
+{
+    return (
+        mouseX >= 620.0f && mouseX <= 750.0f &&
+        mouseY >= 675.0f && mouseY <= 715.0f);
 }
