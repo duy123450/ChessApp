@@ -31,4 +31,6 @@ void drawPieces(
 	PieceTextures &textures,
 	float squareSize,
 	float startX,
-	float startY);
+	float startY,
+	int skipRow = -1,
+	int skipCol = -1);

@@ -224,7 +224,40 @@ int main()
                             int row = static_cast<int>(
                                 (mouseY - startY) / squareSize);
 
-                            gameController.handleBoardClick(row, col);
+                            char piece = game.board.squares[row][col];
+
+                            bool pieceIsWhite = piece >= 'A' && piece <= 'Z';
+
+                            // Start dragging a piece belonging to the current player
+                            if (
+                                piece != '.' &&
+                                pieceIsWhite == game.whiteTurn)
+                            {
+                                // Select the piece if it isn't already selected
+                                if (
+                                    !game.isPieceSelected ||
+                                    game.selectedRow != row ||
+                                    game.selectedCol != col)
+                                {
+                                    gameController.handleBoardClick(row, col);
+                                }
+
+                                if (
+                                    game.isPieceSelected &&
+                                    game.selectedRow == row &&
+                                    game.selectedCol == col)
+                                {
+                                    game.isDraggingPiece = true;
+                                    game.draggedRow = row;
+                                    game.draggedCol = col;
+                                    game.dragMouseX = mouseX;
+                                    game.dragMouseY = mouseY;
+                                }
+                            }
+                            else
+                            {
+                                gameController.handleBoardClick(row, col);
+                            }
                         }
                     }
                 }
@@ -234,12 +267,50 @@ int main()
             if (const auto* mouseReleased = event->getIf<Event::MouseButtonReleased>())
             {
                 if (mouseReleased->button == Mouse::Button::Left)
+                {
                     game.isDraggingScrollbar = false;
+
+                    if (game.isDraggingPiece)
+                    {
+                        float mouseX = static_cast<float>(mouseReleased->position.x);
+                        float mouseY = static_cast<float>(mouseReleased->position.y);
+
+                        // Check whether the piece was released on the board
+                        if (
+                            mouseX >= startX &&
+                            mouseX < startX + boardSize * squareSize &&
+                            mouseY >= startY &&
+                            mouseY < startY + boardSize * squareSize)
+                        {
+                            int col = static_cast<int>(
+                                (mouseX - startX) / squareSize);
+
+                            int row = static_cast<int>(
+                                (mouseY - startY) / squareSize);
+
+                            if (row != game.draggedRow || col != game.draggedCol)
+                            {
+                                gameController.handleBoardClick(row, col);
+                            }
+                        }
+
+                        // Reset drag state
+                        game.isDraggingPiece = false;
+                        game.draggedRow = -1;
+                        game.draggedCol = -1;
+                    }
+                }
             }
 
             // Mouse moved
             if (const auto* mouseMoved = event->getIf<Event::MouseMoved>())
             {
+                if (game.isDraggingPiece)
+                {
+                    game.dragMouseX = static_cast<float>(mouseMoved->position.x);
+                    game.dragMouseY = static_cast<float>(mouseMoved->position.y);
+                }
+
                 if (game.isDraggingScrollbar)
                 {
                     int totalRows = static_cast<int>(game.moveHistory.size());
@@ -372,7 +443,12 @@ int main()
             game.selectedCol,
             squareSize,
             startX,
-            startY);
+            startY,
+            game.isDraggingPiece,
+            game.draggedRow,
+            game.draggedCol,
+            game.dragMouseX,
+            game.dragMouseY);
 
         ui.drawPlayerInfo(window, game);
         ui.drawClaimDrawButton(window);

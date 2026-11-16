@@ -13,7 +13,12 @@ void BoardRenderer::drawBoard(
     int selectedCol,
     float squareSize,
     float startX,
-    float startY)
+    float startY,
+    bool isDraggingPiece,
+    int draggedRow,
+    int draggedCol,
+    float dragMouseX,
+    float dragMouseY)
 {
     sf::RectangleShape square(
         sf::Vector2f(squareSize, squareSize));
@@ -87,7 +92,27 @@ void BoardRenderer::drawBoard(
         textures,
         squareSize,
         startX,
-        startY);
+        startY,
+        isDraggingPiece ? draggedRow : -1,
+        isDraggingPiece ? draggedCol : -1);
+
+    // Draw the dragged piece at the mouse position
+    if (isDraggingPiece)
+    {
+        char piece = board.squares[draggedRow][draggedCol];
+
+        if (piece != '.')
+        {
+            sf::Sprite sprite(getPieceTexture(piece, textures));
+
+            sprite.setPosition({
+                dragMouseX - squareSize / 2,
+                dragMouseY - squareSize / 2
+                });
+
+            window.draw(sprite);
+        }
+    }
 }
 
 void BoardRenderer::drawCoordinates(

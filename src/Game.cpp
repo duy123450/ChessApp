@@ -80,6 +80,14 @@ void Game::reset()
     data.isDraggingScrollbar = false;
     data.scrollbarDragOffset = 0.0f;
 
+    data.isDraggingPiece = false;
+
+    data.draggedRow = -1;
+    data.draggedCol = -1;
+
+    data.dragMouseX = 0.0f;
+    data.dragMouseY = 0.0f;
+
     data.whiteMaterial = 0;
     data.blackMaterial = 0;
 
