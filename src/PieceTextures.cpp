@@ -84,11 +84,19 @@ void drawPieces(
             // Create a sprite
             Sprite sprite(texture);
 
+            // Scale the piece to fit the board square
+            Vector2u textureSize = texture.getSize();
+
+            sprite.setScale({
+                squareSize / textureSize.x,
+                squareSize / textureSize.y
+                });
+
             // Position the sprite
             float x = startX + col * squareSize;
             float y = startY + row * squareSize;
 
-            sprite.setPosition({x, y});
+            sprite.setPosition({ x, y });
 
             // Draw the sprite
             window.draw(sprite);

@@ -105,6 +105,15 @@ void BoardRenderer::drawBoard(
         {
             sf::Sprite sprite(getPieceTexture(piece, textures));
 
+            // Scale the dragged piece to fit one board square
+            sf::Vector2u textureSize = sprite.getTexture().getSize();
+
+            sprite.setScale({
+                squareSize / textureSize.x,
+                squareSize / textureSize.y
+                });
+
+            // Keep the piece centered under the mouse
             sprite.setPosition({
                 dragMouseX - squareSize / 2,
                 dragMouseY - squareSize / 2
