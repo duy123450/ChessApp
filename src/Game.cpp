@@ -15,44 +15,54 @@
 
 using namespace std;
 
-int getPieceValue(char piece) {
-    switch (tolower(static_cast<unsigned char>(piece))) {
-    case 'p': return 1;
-    case 'n': return 3;
-    case 'b': return 3;
-    case 'r': return 5;
-    case 'q': return 9;
-    default: return 0;
+int getPieceValue(char piece)
+{
+    switch (tolower(static_cast<unsigned char>(piece)))
+    {
+    case 'p':
+        return 1;
+    case 'n':
+        return 3;
+    case 'b':
+        return 3;
+    case 'r':
+        return 5;
+    case 'q':
+        return 9;
+    default:
+        return 0;
     }
 }
 
 void addMoveToHistory(
-    vector<pair<string, string>>& moveHistory,
+    vector<pair<string, string>> &moveHistory,
     char movedPiece,
-    string notation
-) {
+    string notation)
+{
     bool isWhite = movedPiece >= 'A' && movedPiece <= 'Z';
 
-    if (isWhite) {
-        moveHistory.push_back({ notation, "" });
+    if (isWhite)
+    {
+        moveHistory.push_back({notation, ""});
     }
-    else {
+    else
+    {
         if (moveHistory.empty() || !moveHistory.back().second.empty())
-            moveHistory.push_back({ "", notation });
+            moveHistory.push_back({"", notation});
         else
             moveHistory.back().second = notation;
     }
 }
 
-Game::Game(GameData& gameData)
-    : data(gameData) {
+Game::Game(GameData &gameData)
+    : data(gameData)
+{
 
-    data.positionOccurrences[
-        getPositionKey(data.board, data.whiteTurn)
-    ] = 1;
+    data.positionOccurrences[getPositionKey(data.board, data.whiteTurn)] = 1;
 }
 
-void Game::reset() {
+void Game::reset()
+{
     data.board = Board();
 
     data.isPieceSelected = false;
@@ -78,9 +88,7 @@ void Game::reset() {
     data.whiteTurn = true;
 
     data.positionOccurrences.clear();
-    data.positionOccurrences[
-        getPositionKey(data.board, data.whiteTurn)
-    ] = 1;
+    data.positionOccurrences[getPositionKey(data.board, data.whiteTurn)] = 1;
 
     data.isPromotionPending = false;
     data.promotionIsWhite = false;
@@ -95,29 +103,28 @@ void Game::reset() {
     cout << "New game started!" << '\n';
 }
 
-void Game::handlePromotion(char promotionChoice) {
+void Game::handlePromotion(char promotionChoice)
+{
     if (!data.isPromotionPending)
         return;
 
     char promotedPiece = data.promotionIsWhite
-        ? promotionChoice
-        : static_cast<char>(promotionChoice + ('a' - 'A'));
+                             ? promotionChoice
+                             : static_cast<char>(promotionChoice + ('a' - 'A'));
 
     data.board.squares[data.promotionRow][data.promotionCol] =
         promotedPiece;
 
     GameState state = getGameState(
         data.board,
-        !data.promotionIsWhite
-    );
+        !data.promotionIsWhite);
 
     string notation = getMoveNotation(
         data.pendingMovedPiece,
         data.pendingCapturedPiece,
         data.pendingMove,
         state,
-        data.pendingIsEnPassant
-    );
+        data.pendingIsEnPassant);
 
     size_t suffixPosition = notation.find_last_of("+#");
 
@@ -126,14 +133,12 @@ void Game::handlePromotion(char promotionChoice) {
     else
         notation.insert(
             suffixPosition,
-            "=" + string(1, promotionChoice)
-        );
+            "=" + string(1, promotionChoice));
 
     addMoveToHistory(
         data.moveHistory,
         data.pendingMovedPiece,
-        notation
-    );
+        notation);
 
     cout << notation << '\n';
 
@@ -146,58 +151,64 @@ void Game::handlePromotion(char promotionChoice) {
 
     data.whiteTurn = !data.whiteTurn;
 
-    data.positionOccurrences[
-        getPositionKey(data.board, data.whiteTurn)
-    ]++;
+    data.positionOccurrences[getPositionKey(data.board, data.whiteTurn)]++;
 }
 
-void Game::handleDrawClaim(char key) {
+void Game::handleDrawClaim(char key)
+{
     if (data.isPromotionPending || data.gameOver)
         return;
 
-    if (key == 'D') {
-        if (data.board.halfMoveClock >= 100) {
+    if (key == 'D')
+    {
+        if (data.board.halfMoveClock >= 100)
+        {
             data.gameOver = true;
             cout << "Draw claimed by the 50-move rule!" << '\n';
         }
     }
 
-    if (key == 'T') {
+    if (key == 'T')
+    {
         string currentPosition = getPositionKey(
             data.board,
-            data.whiteTurn
-        );
+            data.whiteTurn);
 
-        if (data.positionOccurrences[currentPosition] >= 3) {
+        if (data.positionOccurrences[currentPosition] >= 3)
+        {
             data.gameOver = true;
             cout << "Draw claimed by threefold repetition!" << '\n';
         }
     }
 }
 
-void Game::handleBoardClick(int row, int col) {
-    Board& board = data.board;
+void Game::handleBoardClick(int row, int col)
+{
+    Board &board = data.board;
 
     char piece = board.squares[row][col];
 
-    if (!data.isPieceSelected) {
+    if (!data.isPieceSelected)
+    {
         bool pieceIsWhite = piece >= 'A' && piece <= 'Z';
 
-        if (piece != '.' && pieceIsWhite == data.whiteTurn) {
+        if (piece != '.' && pieceIsWhite == data.whiteTurn)
+        {
             data.isPieceSelected = true;
             data.selectedRow = row;
             data.selectedCol = col;
 
             data.possibleMoves.clear();
 
-            for (int r = 0; r < 8; r++) {
-                for (int c = 0; c < 8; c++) {
+            for (int r = 0; r < 8; r++)
+            {
+                for (int c = 0; c < 8; c++)
+                {
                     Move move{
                         data.selectedRow,
                         data.selectedCol,
                         r,
-                        c
-                    };
+                        c};
 
                     if (isValidMove(board, move))
                         data.possibleMoves.push_back(move);
@@ -205,7 +216,8 @@ void Game::handleBoardClick(int row, int col) {
             }
         }
     }
-    else {
+    else
+    {
         char selectedPiece =
             board.squares[data.selectedRow][data.selectedCol];
 
@@ -215,27 +227,31 @@ void Game::handleBoardClick(int row, int col) {
         bool targetIsWhite =
             piece >= 'A' && piece <= 'Z';
 
-        if (piece != '.' && selectedIsWhite == targetIsWhite) {
-            if (row == data.selectedRow && col == data.selectedCol) {
+        if (piece != '.' && selectedIsWhite == targetIsWhite)
+        {
+            if (row == data.selectedRow && col == data.selectedCol)
+            {
                 data.isPieceSelected = false;
                 data.selectedRow = -1;
                 data.selectedCol = -1;
                 data.possibleMoves.clear();
             }
-            else {
+            else
+            {
                 data.selectedRow = row;
                 data.selectedCol = col;
 
                 data.possibleMoves.clear();
 
-                for (int r = 0; r < 8; r++) {
-                    for (int c = 0; c < 8; c++) {
+                for (int r = 0; r < 8; r++)
+                {
+                    for (int c = 0; c < 8; c++)
+                    {
                         Move move{
                             data.selectedRow,
                             data.selectedCol,
                             r,
-                            c
-                        };
+                            c};
 
                         if (isValidMove(board, move))
                             data.possibleMoves.push_back(move);
@@ -243,15 +259,16 @@ void Game::handleBoardClick(int row, int col) {
                 }
             }
         }
-        else {
+        else
+        {
             Move move{
                 data.selectedRow,
                 data.selectedCol,
                 row,
-                col
-            };
+                col};
 
-            if (isValidMove(board, move)) {
+            if (isValidMove(board, move))
+            {
                 bool opponentIsWhite =
                     selectedPiece >= 'a' && selectedPiece <= 'z';
 
@@ -264,7 +281,8 @@ void Game::handleBoardClick(int row, int col) {
                 if (selectedPiece == 'k')
                     board.blackKingMoved = true;
 
-                if (selectedPiece == 'R' && data.selectedRow == 7) {
+                if (selectedPiece == 'R' && data.selectedRow == 7)
+                {
                     if (data.selectedCol == 0)
                         board.whiteQueensideRookMoved = true;
 
@@ -272,7 +290,8 @@ void Game::handleBoardClick(int row, int col) {
                         board.whiteKingsideRookMoved = true;
                 }
 
-                if (selectedPiece == 'r' && data.selectedRow == 0) {
+                if (selectedPiece == 'r' && data.selectedRow == 0)
+                {
                     if (data.selectedCol == 0)
                         board.blackQueensideRookMoved = true;
 
@@ -280,7 +299,8 @@ void Game::handleBoardClick(int row, int col) {
                         board.blackKingsideRookMoved = true;
                 }
 
-                if (capturedPiece == 'R' && row == 7) {
+                if (capturedPiece == 'R' && row == 7)
+                {
                     if (col == 0)
                         board.whiteQueensideRookMoved = true;
 
@@ -288,7 +308,8 @@ void Game::handleBoardClick(int row, int col) {
                         board.whiteKingsideRookMoved = true;
                 }
 
-                if (capturedPiece == 'r' && row == 0) {
+                if (capturedPiece == 'r' && row == 0)
+                {
                     if (col == 0)
                         board.blackQueensideRookMoved = true;
 
@@ -304,10 +325,11 @@ void Game::handleBoardClick(int row, int col) {
                     col == board.enPassantCol;
 
                 char pieceCaptured = isEnPassant
-                    ? board.squares[data.selectedRow][col]
-                    : capturedPiece;
+                                         ? board.squares[data.selectedRow][col]
+                                         : capturedPiece;
 
-                if (pieceCaptured != '.') {
+                if (pieceCaptured != '.')
+                {
                     if (movedPiece >= 'A' && movedPiece <= 'Z')
                         data.whiteCapturedPieces.push_back(pieceCaptured);
                     else
@@ -341,7 +363,8 @@ void Game::handleBoardClick(int row, int col) {
                 board.enPassantRow = -1;
                 board.enPassantCol = -1;
 
-                if (isPawnDoubleStep) {
+                if (isPawnDoubleStep)
+                {
                     board.enPassantRow = row;
                     board.enPassantCol = col;
                 }
@@ -352,7 +375,8 @@ void Game::handleBoardClick(int row, int col) {
                     row == data.selectedRow &&
                     abs(col - data.selectedCol) == 2;
 
-                if (isCastling) {
+                if (isCastling)
+                {
                     int rookFromCol = (col == 6) ? 7 : 0;
                     int rookToCol = (col == 6) ? 5 : 3;
 
@@ -364,20 +388,23 @@ void Game::handleBoardClick(int row, int col) {
 
                     board.squares[row][rookFromCol] = '.';
 
-                    if (movedPiece == 'K') {
+                    if (movedPiece == 'K')
+                    {
                         if (col == 6)
                             board.whiteKingsideRookMoved = true;
                         else
                             board.whiteQueensideRookMoved = true;
                     }
-                    else {
+                    else
+                    {
                         if (col == 6)
                             board.blackKingsideRookMoved = true;
                         else
                             board.blackQueensideRookMoved = true;
                     }
                 }
-                else {
+                else
+                {
                     if (isEnPassant)
                         board.squares[data.selectedRow][col] = '.';
 
@@ -389,7 +416,8 @@ void Game::handleBoardClick(int row, int col) {
                     (movedPiece == 'P' && row == 0) ||
                     (movedPiece == 'p' && row == 7);
 
-                if (isPawnPromotion) {
+                if (isPawnPromotion)
+                {
                     data.isPromotionPending = true;
                     data.promotionIsWhite = (movedPiece == 'P');
 
@@ -404,11 +432,11 @@ void Game::handleBoardClick(int row, int col) {
                     cout << "Pawn promotion! Press Q, R, B, or N.\n";
                 }
 
-                if (!isPawnPromotion) {
+                if (!isPawnPromotion)
+                {
                     GameState state = getGameState(
                         board,
-                        opponentIsWhite
-                    );
+                        opponentIsWhite);
 
                     if (state.isGameOver)
                         data.gameOver = true;
@@ -418,14 +446,12 @@ void Game::handleBoardClick(int row, int col) {
                         capturedPiece,
                         move,
                         state,
-                        isEnPassant
-                    );
+                        isEnPassant);
 
                     addMoveToHistory(
                         data.moveHistory,
                         movedPiece,
-                        notation
-                    );
+                        notation);
 
                     cout << notation << '\n';
 
@@ -438,16 +464,15 @@ void Game::handleBoardClick(int row, int col) {
                     if (state.canClaimDrawByFiftyMoveRule)
                         cout << "50-move rule: Draw can be claimed!" << '\n';
 
-                    if (state.isDrawBySeventyFiveMoveRule) {
+                    if (state.isDrawBySeventyFiveMoveRule)
+                    {
                         data.gameOver = true;
                         cout << "Draw by the 75-move rule!" << '\n';
                     }
 
                     data.whiteTurn = !data.whiteTurn;
 
-                    data.positionOccurrences[
-                        getPositionKey(board, data.whiteTurn)
-                    ]++;
+                    data.positionOccurrences[getPositionKey(board, data.whiteTurn)]++;
                 }
 
                 data.isPieceSelected = false;
@@ -456,7 +481,8 @@ void Game::handleBoardClick(int row, int col) {
 
                 data.possibleMoves.clear();
             }
-            else {
+            else
+            {
                 cout << "Invalid move!\n";
             }
         }

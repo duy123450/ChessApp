@@ -1,6 +1,7 @@
 #pragma once
 
-struct Move {
+struct Move
+{
     int fromRow;
     int fromCol;
     int toRow;

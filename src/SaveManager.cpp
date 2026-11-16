@@ -10,15 +10,18 @@
 
 using namespace std;
 
-void SaveManager::clearSavedGame() {
+void SaveManager::clearSavedGame()
+{
     ofstream file("saved_game.txt", ios::trunc);
     file.close();
 }
 
-bool expectLine(ifstream& file, const string& expected) {
+bool expectLine(ifstream &file, const string &expected)
+{
     string line;
 
-    while (getline(file, line)) {
+    while (getline(file, line))
+    {
         if (!line.empty())
             return line == expected;
     }
@@ -28,10 +31,10 @@ bool expectLine(ifstream& file, const string& expected) {
 
 template <typename T>
 bool readLabeledValue(
-    ifstream& file,
-    const string& expectedLabel,
-    T& value
-) {
+    ifstream &file,
+    const string &expectedLabel,
+    T &value)
+{
     string line;
 
     if (!getline(file, line))
@@ -60,10 +63,10 @@ bool readLabeledValue(
 }
 
 bool readLabeledString(
-    ifstream& file,
-    const string& expectedLabel,
-    string& value
-) {
+    ifstream &file,
+    const string &expectedLabel,
+    string &value)
+{
     string line;
 
     if (!getline(file, line))
@@ -85,26 +88,37 @@ bool readLabeledString(
     return true;
 }
 
-int getSavedPieceValue(char piece) {
-    switch (tolower(static_cast<unsigned char>(piece))) {
-    case 'p': return 1;
-    case 'n': return 3;
-    case 'b': return 3;
-    case 'r': return 5;
-    case 'q': return 9;
-    default: return 0;
+int getSavedPieceValue(char piece)
+{
+    switch (tolower(static_cast<unsigned char>(piece)))
+    {
+    case 'p':
+        return 1;
+    case 'n':
+        return 3;
+    case 'b':
+        return 3;
+    case 'r':
+        return 5;
+    case 'q':
+        return 9;
+    default:
+        return 0;
     }
 }
 
-void SaveManager::saveGame(const GameData& game) {
-    if (game.gameOver) {
+void SaveManager::saveGame(const GameData &game)
+{
+    if (game.gameOver)
+    {
         cout << "Cannot save: the game has already ended!" << '\n';
         return;
     }
 
     ofstream file("saved_game.txt", ios::trunc);
 
-    if (!file.is_open()) {
+    if (!file.is_open())
+    {
         cout << "Failed to open save file!" << '\n';
         return;
     }
@@ -114,7 +128,8 @@ void SaveManager::saveGame(const GameData& game) {
 
     file << "========== BOARD ==========\n";
 
-    for (int row = 0; row < 8; row++) {
+    for (int row = 0; row < 8; row++)
+    {
         for (int col = 0; col < 8; col++)
             file << game.board.squares[row][col];
 
@@ -126,16 +141,16 @@ void SaveManager::saveGame(const GameData& game) {
     file << "Black King Moved: " << game.board.blackKingMoved << '\n';
 
     file << "White Kingside Rook Moved: "
-        << game.board.whiteKingsideRookMoved << '\n';
+         << game.board.whiteKingsideRookMoved << '\n';
 
     file << "White Queenside Rook Moved: "
-        << game.board.whiteQueensideRookMoved << '\n';
+         << game.board.whiteQueensideRookMoved << '\n';
 
     file << "Black Kingside Rook Moved: "
-        << game.board.blackKingsideRookMoved << '\n';
+         << game.board.blackKingsideRookMoved << '\n';
 
     file << "Black Queenside Rook Moved: "
-        << game.board.blackQueensideRookMoved << '\n';
+         << game.board.blackQueensideRookMoved << '\n';
 
     file << "\n========== SPECIAL MOVE DATA ==========\n";
     file << "En Passant Row: " << game.board.enPassantRow << '\n';
@@ -148,7 +163,7 @@ void SaveManager::saveGame(const GameData& game) {
     file << "\n========== CAPTURED PIECES ==========\n";
 
     file << "White Captured Count: "
-        << game.whiteCapturedPieces.size() << '\n';
+         << game.whiteCapturedPieces.size() << '\n';
 
     file << "White Captured: ";
     for (char piece : game.whiteCapturedPieces)
@@ -156,7 +171,7 @@ void SaveManager::saveGame(const GameData& game) {
     file << '\n';
 
     file << "Black Captured Count: "
-        << game.blackCapturedPieces.size() << '\n';
+         << game.blackCapturedPieces.size() << '\n';
 
     file << "Black Captured: ";
     for (char piece : game.blackCapturedPieces)
@@ -166,17 +181,19 @@ void SaveManager::saveGame(const GameData& game) {
     file << "\n========== MOVE HISTORY ==========\n";
     file << "Move Count: " << game.moveHistory.size() << '\n';
 
-    for (const auto& move : game.moveHistory) {
+    for (const auto &move : game.moveHistory)
+    {
         file << quoted(move.first) << ' '
-            << quoted(move.second) << '\n';
+             << quoted(move.second) << '\n';
     }
 
     file << "\n========== POSITION REPETITIONS ==========\n";
     file << "Position Count: " << game.positionOccurrences.size() << '\n';
 
-    for (const auto& position : game.positionOccurrences) {
+    for (const auto &position : game.positionOccurrences)
+    {
         file << quoted(position.first) << ' '
-            << position.second << '\n';
+             << position.second << '\n';
     }
 
     file << "\n========== PAWN PROMOTION ==========\n";
@@ -197,7 +214,8 @@ void SaveManager::saveGame(const GameData& game) {
 
     file.flush();
 
-    if (!file) {
+    if (!file)
+    {
         cout << "Failed to save game!" << '\n';
         return;
     }
@@ -207,45 +225,54 @@ void SaveManager::saveGame(const GameData& game) {
     cout << "Game saved successfully!" << '\n';
 }
 
-bool SaveManager::loadGame(GameData& game) {
+bool SaveManager::loadGame(GameData &game)
+{
     ifstream file("saved_game.txt");
 
-    if (!file.is_open()) {
+    if (!file.is_open())
+    {
         cout << "Failed to open save file!" << '\n';
         return false;
     }
 
     SavedGameData data;
 
-    if (!expectLine(file, "========== CHESS SAVE FILE ==========")) {
+    if (!expectLine(file, "========== CHESS SAVE FILE =========="))
+    {
         cout << "Invalid save file header!" << '\n';
         return false;
     }
 
     int version;
 
-    if (!readLabeledValue(file, "Version", version) || version != 1) {
+    if (!readLabeledValue(file, "Version", version) || version != 1)
+    {
         cout << "Unsupported save file version!" << '\n';
         return false;
     }
 
-    if (!expectLine(file, "========== BOARD ==========")) {
+    if (!expectLine(file, "========== BOARD =========="))
+    {
         cout << "Missing board data!" << '\n';
         return false;
     }
 
     const string validPieces = "prnbqkPRNBQK.";
 
-    for (int row = 0; row < 8; row++) {
+    for (int row = 0; row < 8; row++)
+    {
         string line;
 
-        if (!getline(file, line) || line.size() != 8) {
+        if (!getline(file, line) || line.size() != 8)
+        {
             cout << "Invalid board data!" << '\n';
             return false;
         }
 
-        for (int col = 0; col < 8; col++) {
-            if (validPieces.find(line[col]) == string::npos) {
+        for (int col = 0; col < 8; col++)
+        {
+            if (validPieces.find(line[col]) == string::npos)
+            {
                 cout << "Invalid chess piece!" << '\n';
                 return false;
             }
@@ -254,7 +281,8 @@ bool SaveManager::loadGame(GameData& game) {
         }
     }
 
-    if (!expectLine(file, "========== CASTLING RIGHTS ==========")) {
+    if (!expectLine(file, "========== CASTLING RIGHTS =========="))
+    {
         cout << "Missing castling data!" << '\n';
         return false;
     }
@@ -272,8 +300,8 @@ bool SaveManager::loadGame(GameData& game) {
         !readLabeledValue(file, "White Kingside Rook Moved", whiteKingsideRookMoved) ||
         !readLabeledValue(file, "White Queenside Rook Moved", whiteQueensideRookMoved) ||
         !readLabeledValue(file, "Black Kingside Rook Moved", blackKingsideRookMoved) ||
-        !readLabeledValue(file, "Black Queenside Rook Moved", blackQueensideRookMoved)
-        ) {
+        !readLabeledValue(file, "Black Queenside Rook Moved", blackQueensideRookMoved))
+    {
         cout << "Invalid castling data!" << '\n';
         return false;
     }
@@ -284,8 +312,8 @@ bool SaveManager::loadGame(GameData& game) {
         (whiteKingsideRookMoved != 0 && whiteKingsideRookMoved != 1) ||
         (whiteQueensideRookMoved != 0 && whiteQueensideRookMoved != 1) ||
         (blackKingsideRookMoved != 0 && blackKingsideRookMoved != 1) ||
-        (blackQueensideRookMoved != 0 && blackQueensideRookMoved != 1)
-        ) {
+        (blackQueensideRookMoved != 0 && blackQueensideRookMoved != 1))
+    {
         cout << "Invalid castling values!" << '\n';
         return false;
     }
@@ -299,7 +327,8 @@ bool SaveManager::loadGame(GameData& game) {
     data.board.blackKingsideRookMoved = blackKingsideRookMoved;
     data.board.blackQueensideRookMoved = blackQueensideRookMoved;
 
-    if (!expectLine(file, "========== SPECIAL MOVE DATA ==========")) {
+    if (!expectLine(file, "========== SPECIAL MOVE DATA =========="))
+    {
         cout << "Missing special move data!" << '\n';
         return false;
     }
@@ -307,8 +336,8 @@ bool SaveManager::loadGame(GameData& game) {
     if (
         !readLabeledValue(file, "En Passant Row", data.board.enPassantRow) ||
         !readLabeledValue(file, "En Passant Column", data.board.enPassantCol) ||
-        !readLabeledValue(file, "Half Move Clock", data.board.halfMoveClock)
-        ) {
+        !readLabeledValue(file, "Half Move Clock", data.board.halfMoveClock))
+    {
         cout << "Invalid special move data!" << '\n';
         return false;
     }
@@ -317,13 +346,14 @@ bool SaveManager::loadGame(GameData& game) {
         data.board.enPassantRow < -1 || data.board.enPassantRow > 7 ||
         data.board.enPassantCol < -1 || data.board.enPassantCol > 7 ||
         (data.board.enPassantRow == -1) != (data.board.enPassantCol == -1) ||
-        data.board.halfMoveClock < 0
-        ) {
+        data.board.halfMoveClock < 0)
+    {
         cout << "Special move data is out of range!" << '\n';
         return false;
     }
 
-    if (!expectLine(file, "========== GAME TURN ==========")) {
+    if (!expectLine(file, "========== GAME TURN =========="))
+    {
         cout << "Missing turn data!" << '\n';
         return false;
     }
@@ -332,15 +362,16 @@ bool SaveManager::loadGame(GameData& game) {
 
     if (
         !readLabeledValue(file, "White Turn", savedWhiteTurn) ||
-        (savedWhiteTurn != 0 && savedWhiteTurn != 1)
-        ) {
+        (savedWhiteTurn != 0 && savedWhiteTurn != 1))
+    {
         cout << "Invalid turn data!" << '\n';
         return false;
     }
 
     data.whiteTurn = savedWhiteTurn;
 
-    if (!expectLine(file, "========== CAPTURED PIECES ==========")) {
+    if (!expectLine(file, "========== CAPTURED PIECES =========="))
+    {
         cout << "Missing captured pieces data!" << '\n';
         return false;
     }
@@ -355,8 +386,8 @@ bool SaveManager::loadGame(GameData& game) {
         !readLabeledValue(file, "White Captured Count", whiteCapturedCount) ||
         !readLabeledString(file, "White Captured", whiteCaptured) ||
         !readLabeledValue(file, "Black Captured Count", blackCapturedCount) ||
-        !readLabeledString(file, "Black Captured", blackCaptured)
-        ) {
+        !readLabeledString(file, "Black Captured", blackCaptured))
+    {
         cout << "Invalid captured pieces data!" << '\n';
         return false;
     }
@@ -365,23 +396,27 @@ bool SaveManager::loadGame(GameData& game) {
         whiteCapturedCount < 0 || whiteCapturedCount > 64 ||
         blackCapturedCount < 0 || blackCapturedCount > 64 ||
         whiteCaptured.size() != static_cast<size_t>(whiteCapturedCount) ||
-        blackCaptured.size() != static_cast<size_t>(blackCapturedCount)
-        ) {
+        blackCaptured.size() != static_cast<size_t>(blackCapturedCount))
+    {
         cout << "Invalid captured pieces count!" << '\n';
         return false;
     }
 
     const string validCapturedPieces = "prnbqPRNBQ";
 
-    for (char piece : whiteCaptured) {
-        if (validCapturedPieces.find(piece) == string::npos) {
+    for (char piece : whiteCaptured)
+    {
+        if (validCapturedPieces.find(piece) == string::npos)
+        {
             cout << "Invalid captured piece!" << '\n';
             return false;
         }
     }
 
-    for (char piece : blackCaptured) {
-        if (validCapturedPieces.find(piece) == string::npos) {
+    for (char piece : blackCaptured)
+    {
+        if (validCapturedPieces.find(piece) == string::npos)
+        {
             cout << "Invalid captured piece!" << '\n';
             return false;
         }
@@ -390,7 +425,8 @@ bool SaveManager::loadGame(GameData& game) {
     data.whiteCapturedPieces.assign(whiteCaptured.begin(), whiteCaptured.end());
     data.blackCapturedPieces.assign(blackCaptured.begin(), blackCaptured.end());
 
-    if (!expectLine(file, "========== MOVE HISTORY ==========")) {
+    if (!expectLine(file, "========== MOVE HISTORY =========="))
+    {
         cout << "Missing move history!" << '\n';
         return false;
     }
@@ -399,25 +435,28 @@ bool SaveManager::loadGame(GameData& game) {
 
     if (
         !readLabeledValue(file, "Move Count", moveCount) ||
-        moveCount < 0 || moveCount > 10000
-        ) {
+        moveCount < 0 || moveCount > 10000)
+    {
         cout << "Invalid move count!" << '\n';
         return false;
     }
 
-    for (int i = 0; i < moveCount; i++) {
+    for (int i = 0; i < moveCount; i++)
+    {
         string whiteMove;
         string blackMove;
 
-        if (!(file >> quoted(whiteMove) >> quoted(blackMove))) {
+        if (!(file >> quoted(whiteMove) >> quoted(blackMove)))
+        {
             cout << "Invalid move history data!" << '\n';
             return false;
         }
 
-        data.moveHistory.push_back({ whiteMove, blackMove });
+        data.moveHistory.push_back({whiteMove, blackMove});
     }
 
-    if (!expectLine(file, "========== POSITION REPETITIONS ==========")) {
+    if (!expectLine(file, "========== POSITION REPETITIONS =========="))
+    {
         cout << "Missing position repetition data!" << '\n';
         return false;
     }
@@ -426,27 +465,31 @@ bool SaveManager::loadGame(GameData& game) {
 
     if (
         !readLabeledValue(file, "Position Count", positionCount) ||
-        positionCount < 1 || positionCount > 10000
-        ) {
+        positionCount < 1 || positionCount > 10000)
+    {
         cout << "Invalid position count!" << '\n';
         return false;
     }
 
-    for (int i = 0; i < positionCount; i++) {
+    for (int i = 0; i < positionCount; i++)
+    {
         string positionKey;
         int occurrenceCount;
 
-        if (!(file >> quoted(positionKey) >> occurrenceCount)) {
+        if (!(file >> quoted(positionKey) >> occurrenceCount))
+        {
             cout << "Invalid position repetition data!" << '\n';
             return false;
         }
 
-        if (positionKey.empty() || occurrenceCount < 1) {
+        if (positionKey.empty() || occurrenceCount < 1)
+        {
             cout << "Invalid position repetition values!" << '\n';
             return false;
         }
 
-        if (data.positionOccurrences.find(positionKey) != data.positionOccurrences.end()) {
+        if (data.positionOccurrences.find(positionKey) != data.positionOccurrences.end())
+        {
             cout << "Duplicate position key!" << '\n';
             return false;
         }
@@ -454,7 +497,8 @@ bool SaveManager::loadGame(GameData& game) {
         data.positionOccurrences[positionKey] = occurrenceCount;
     }
 
-    if (!expectLine(file, "========== PAWN PROMOTION ==========")) {
+    if (!expectLine(file, "========== PAWN PROMOTION =========="))
+    {
         cout << "Missing pawn promotion data!" << '\n';
         return false;
     }
@@ -471,8 +515,8 @@ bool SaveManager::loadGame(GameData& game) {
         !readLabeledValue(file, "Pending Move From Row", data.pendingMove.fromRow) ||
         !readLabeledValue(file, "Pending Move From Column", data.pendingMove.fromCol) ||
         !readLabeledValue(file, "Pending Move To Row", data.pendingMove.toRow) ||
-        !readLabeledValue(file, "Pending Move To Column", data.pendingMove.toCol)
-        ) {
+        !readLabeledValue(file, "Pending Move To Column", data.pendingMove.toCol))
+    {
         cout << "Invalid pawn promotion data!" << '\n';
         return false;
     }
@@ -485,8 +529,8 @@ bool SaveManager::loadGame(GameData& game) {
         !readLabeledString(file, "Pending Captured Piece", capturedPiece) ||
         !readLabeledValue(file, "Pending Is En Passant", pendingIsEnPassant) ||
         movedPiece.size() != 1 ||
-        capturedPiece.size() != 1
-        ) {
+        capturedPiece.size() != 1)
+    {
         cout << "Invalid pending piece data!" << '\n';
         return false;
     }
@@ -494,8 +538,8 @@ bool SaveManager::loadGame(GameData& game) {
     if (
         (promotionPending != 0 && promotionPending != 1) ||
         (promotionIsWhite != 0 && promotionIsWhite != 1) ||
-        (pendingIsEnPassant != 0 && pendingIsEnPassant != 1)
-        ) {
+        (pendingIsEnPassant != 0 && pendingIsEnPassant != 1))
+    {
         cout << "Invalid promotion boolean values!" << '\n';
         return false;
     }
@@ -507,7 +551,8 @@ bool SaveManager::loadGame(GameData& game) {
     data.pendingMovedPiece = movedPiece[0];
     data.pendingCapturedPiece = capturedPiece[0];
 
-    if (data.isPromotionPending) {
+    if (data.isPromotionPending)
+    {
         if (
             data.promotionRow < 0 || data.promotionRow > 7 ||
             data.promotionCol < 0 || data.promotionCol > 7 ||
@@ -516,23 +561,24 @@ bool SaveManager::loadGame(GameData& game) {
             data.pendingMove.toRow < 0 || data.pendingMove.toRow > 7 ||
             data.pendingMove.toCol < 0 || data.pendingMove.toCol > 7 ||
             data.promotionRow != data.pendingMove.toRow ||
-            data.promotionCol != data.pendingMove.toCol
-            ) {
+            data.promotionCol != data.pendingMove.toCol)
+        {
             cout << "Invalid pending promotion coordinates!" << '\n';
             return false;
         }
 
         if (
             (data.promotionIsWhite && data.pendingMovedPiece != 'P') ||
-            (!data.promotionIsWhite && data.pendingMovedPiece != 'p')
-            ) {
+            (!data.promotionIsWhite && data.pendingMovedPiece != 'p'))
+        {
             cout << "Invalid pending promotion piece!" << '\n';
             return false;
         }
 
         char boardPiece = data.board.squares[data.promotionRow][data.promotionCol];
 
-        if (boardPiece != data.pendingMovedPiece) {
+        if (boardPiece != data.pendingMovedPiece)
+        {
             cout << "Pending promotion piece does not match the board!" << '\n';
             return false;
         }
@@ -540,7 +586,8 @@ bool SaveManager::loadGame(GameData& game) {
 
     file >> ws;
 
-    if (!file.eof()) {
+    if (!file.eof())
+    {
         cout << "Unexpected data at the end of the save file!" << '\n';
         return false;
     }

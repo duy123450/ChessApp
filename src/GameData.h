@@ -10,7 +10,8 @@
 #include "Board.h"
 #include "Move.h"
 
-struct SavedGameData {
+struct SavedGameData
+{
     Board board;
 
     bool whiteTurn = true;
@@ -36,7 +37,8 @@ struct SavedGameData {
     bool pendingIsEnPassant = false;
 };
 
-struct GameData {
+struct GameData
+{
     Board board;
 
     std::unordered_map<std::string, int> positionOccurrences;

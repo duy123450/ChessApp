@@ -15,12 +15,12 @@
 using namespace sf;
 using namespace std;
 
-int main() {
+int main()
+{
     // Initialize window
     RenderWindow window(
-        VideoMode({ 1010, 800 }),
-        "Chess App"
-    );
+        VideoMode({1010, 800}),
+        "Chess App");
 
     // Board settings
     const int boardSize = 8;
@@ -56,56 +56,61 @@ int main() {
     UI ui(font);
 
     // Main loop
-    while (window.isOpen()) {
+    while (window.isOpen())
+    {
 
         // Handle events
-        while (const optional event = window.pollEvent()) {
+        while (const optional event = window.pollEvent())
+        {
 
             // Close window
-            if (event->is<Event::Closed>()) {
+            if (event->is<Event::Closed>())
+            {
                 window.close();
             }
 
             // Mouse wheel scrolling
-            if (const auto* wheel = event->getIf<Event::MouseWheelScrolled>()) {
+            if (const auto *wheel = event->getIf<Event::MouseWheelScrolled>())
+            {
                 int mouseX = wheel->position.x;
                 int mouseY = wheel->position.y;
 
                 if (
                     mouseX >= 620 && mouseX <= 1000 &&
                     mouseY >= historyContentTop &&
-                    mouseY < historyContentTop + historyContentHeight
-                    ) {
+                    mouseY < historyContentTop + historyContentHeight)
+                {
                     int maxScroll = max(
                         0,
-                        static_cast<int>(game.moveHistory.size()) - visibleRows
-                    );
+                        static_cast<int>(game.moveHistory.size()) - visibleRows);
 
                     game.historyScrollOffset -=
                         static_cast<int>(wheel->delta * 3.0f);
 
                     game.historyScrollOffset = max(
                         0,
-                        min(game.historyScrollOffset, maxScroll)
-                    );
+                        min(game.historyScrollOffset, maxScroll));
                 }
             }
 
             // Mouse button pressed
-            if (const auto* mousePressed = event->getIf<Event::MouseButtonPressed>()) {
+            if (const auto *mousePressed = event->getIf<Event::MouseButtonPressed>())
+            {
 
-                if (mousePressed->button == Mouse::Button::Left) {
+                if (mousePressed->button == Mouse::Button::Left)
+                {
 
                     float mouseX = static_cast<float>(mousePressed->position.x);
                     float mouseY = static_cast<float>(mousePressed->position.y);
 
                     // Load confirmation dialog
-                    if (showLoadConfirmation) {
+                    if (showLoadConfirmation)
+                    {
 
                         if (
                             mouseX >= 390.0f && mouseX <= 490.0f &&
-                            mouseY >= 425.0f && mouseY <= 465.0f
-                            ) {
+                            mouseY >= 425.0f && mouseY <= 465.0f)
+                        {
                             showLoadConfirmation = false;
 
                             if (!SaveManager::loadGame(game))
@@ -113,37 +118,38 @@ int main() {
                         }
                         else if (
                             mouseX >= 520.0f && mouseX <= 620.0f &&
-                            mouseY >= 425.0f && mouseY <= 465.0f
-                            ) {
+                            mouseY >= 425.0f && mouseY <= 465.0f)
+                        {
                             showLoadConfirmation = false;
                             cout << "Load cancelled!" << '\n';
                         }
                     }
 
                     // Normal game interactions
-                    else {
+                    else
+                    {
 
                         // New Game button
                         if (
                             mouseX >= 620.0f && mouseX <= 750.0f &&
-                            mouseY >= 620.0f && mouseY <= 660.0f
-                            ) {
+                            mouseY >= 620.0f && mouseY <= 660.0f)
+                        {
                             gameController.reset();
                         }
 
                         // Save Game button
                         if (
                             mouseX >= 760.0f && mouseX <= 870.0f &&
-                            mouseY >= 620.0f && mouseY <= 660.0f
-                            ) {
+                            mouseY >= 620.0f && mouseY <= 660.0f)
+                        {
                             SaveManager::saveGame(game);
                         }
 
                         // Load Game button
                         if (
                             mouseX >= 880.0f && mouseX <= 990.0f &&
-                            mouseY >= 620.0f && mouseY <= 660.0f
-                            ) {
+                            mouseY >= 620.0f && mouseY <= 660.0f)
+                        {
                             showLoadConfirmation = true;
                         }
 
@@ -155,28 +161,28 @@ int main() {
                             mouseX >= scrollbarX &&
                             mouseX <= scrollbarX + scrollbarWidth &&
                             mouseY >= historyContentTop &&
-                            mouseY <= historyContentTop + historyContentHeight
-                            ) {
+                            mouseY <= historyContentTop + historyContentHeight)
+                        {
                             int maxScroll = totalRows - visibleRows;
 
                             float thumbHeight = max(
                                 30.0f,
-                                historyContentHeight * visibleRows / totalRows
-                            );
+                                historyContentHeight * visibleRows / totalRows);
 
                             float thumbTop =
                                 historyContentTop +
                                 (static_cast<float>(game.historyScrollOffset) / maxScroll) *
-                                (historyContentHeight - thumbHeight);
+                                    (historyContentHeight - thumbHeight);
 
                             if (
                                 mouseY >= thumbTop &&
-                                mouseY <= thumbTop + thumbHeight
-                                ) {
+                                mouseY <= thumbTop + thumbHeight)
+                            {
                                 game.isDraggingScrollbar = true;
                                 game.scrollbarDragOffset = mouseY - thumbTop;
                             }
-                            else {
+                            else
+                            {
                                 if (mouseY < thumbTop)
                                     game.historyScrollOffset -= visibleRows;
                                 else
@@ -184,8 +190,7 @@ int main() {
 
                                 game.historyScrollOffset = max(
                                     0,
-                                    min(game.historyScrollOffset, maxScroll)
-                                );
+                                    min(game.historyScrollOffset, maxScroll));
                             }
                         }
 
@@ -197,15 +202,13 @@ int main() {
                             mouseX >= startX &&
                             mouseX < startX + boardSize * squareSize &&
                             mouseY >= startY &&
-                            mouseY < startY + boardSize * squareSize
-                            ) {
+                            mouseY < startY + boardSize * squareSize)
+                        {
                             int col = static_cast<int>(
-                                (mouseX - startX) / squareSize
-                                );
+                                (mouseX - startX) / squareSize);
 
                             int row = static_cast<int>(
-                                (mouseY - startY) / squareSize
-                                );
+                                (mouseY - startY) / squareSize);
 
                             gameController.handleBoardClick(row, col);
                         }
@@ -214,26 +217,29 @@ int main() {
             }
 
             // Mouse button released
-            if (const auto* mouseReleased = event->getIf<Event::MouseButtonReleased>()) {
+            if (const auto *mouseReleased = event->getIf<Event::MouseButtonReleased>())
+            {
 
                 if (mouseReleased->button == Mouse::Button::Left)
                     game.isDraggingScrollbar = false;
             }
 
             // Mouse moved
-            if (const auto* mouseMoved = event->getIf<Event::MouseMoved>()) {
+            if (const auto *mouseMoved = event->getIf<Event::MouseMoved>())
+            {
 
-                if (game.isDraggingScrollbar) {
+                if (game.isDraggingScrollbar)
+                {
 
                     int totalRows = static_cast<int>(game.moveHistory.size());
                     int maxScroll = totalRows - visibleRows;
 
-                    if (maxScroll > 0) {
+                    if (maxScroll > 0)
+                    {
 
                         float thumbHeight = max(
                             30.0f,
-                            historyContentHeight * visibleRows / totalRows
-                        );
+                            historyContentHeight * visibleRows / totalRows);
 
                         float newThumbTop =
                             static_cast<float>(mouseMoved->position.y) -
@@ -248,8 +254,7 @@ int main() {
 
                         newThumbTop = max(
                             minThumbTop,
-                            min(newThumbTop, maxThumbTop)
-                        );
+                            min(newThumbTop, maxThumbTop));
 
                         float scrollRatio =
                             (newThumbTop - historyContentTop) /
@@ -262,38 +267,53 @@ int main() {
             }
 
             // Keyboard input
-            if (const auto* keyPressed = event->getIf<Event::KeyPressed>()) {
+            if (const auto *keyPressed = event->getIf<Event::KeyPressed>())
+            {
 
                 // Pawn promotion
-                if (game.isPromotionPending) {
+                if (game.isPromotionPending)
+                {
 
                     char promotionChoice = '.';
 
-                    switch (keyPressed->code) {
-                    case Keyboard::Key::Q: promotionChoice = 'Q'; break;
-                    case Keyboard::Key::R: promotionChoice = 'R'; break;
-                    case Keyboard::Key::B: promotionChoice = 'B'; break;
-                    case Keyboard::Key::N: promotionChoice = 'N'; break;
+                    switch (keyPressed->code)
+                    {
+                    case Keyboard::Key::Q:
+                        promotionChoice = 'Q';
+                        break;
+                    case Keyboard::Key::R:
+                        promotionChoice = 'R';
+                        break;
+                    case Keyboard::Key::B:
+                        promotionChoice = 'B';
+                        break;
+                    case Keyboard::Key::N:
+                        promotionChoice = 'N';
+                        break;
                     }
 
-                    if (promotionChoice != '.') {
+                    if (promotionChoice != '.')
+                    {
                         gameController.handlePromotion(promotionChoice);
                     }
                 }
 
                 // Draw claims
-                if (keyPressed->code == Keyboard::Key::D) {
+                if (keyPressed->code == Keyboard::Key::D)
+                {
                     gameController.handleDrawClaim('D');
                 }
 
-                if (keyPressed->code == Keyboard::Key::T) {
+                if (keyPressed->code == Keyboard::Key::T)
+                {
                     gameController.handleDrawClaim('T');
                 }
             }
         }
 
         // Clear saved game after game over
-        if (game.gameOver && !game.saveFileCleared) {
+        if (game.gameOver && !game.saveFileCleared)
+        {
 
             SaveManager::clearSavedGame();
             game.saveFileCleared = true;
@@ -306,30 +326,26 @@ int main() {
 
         int previousMaxScroll = max(
             0,
-            game.previousMoveCount - visibleRows
-        );
+            game.previousMoveCount - visibleRows);
 
         if (
             currentMoveCount > game.previousMoveCount &&
-            game.historyScrollOffset >= previousMaxScroll
-            ) {
+            game.historyScrollOffset >= previousMaxScroll)
+        {
             game.historyScrollOffset = max(
                 0,
-                currentMoveCount - visibleRows
-            );
+                currentMoveCount - visibleRows);
         }
 
         game.previousMoveCount = currentMoveCount;
 
         int maxScroll = max(
             0,
-            currentMoveCount - visibleRows
-        );
+            currentMoveCount - visibleRows);
 
         game.historyScrollOffset = max(
             0,
-            min(game.historyScrollOffset, maxScroll)
-        );
+            min(game.historyScrollOffset, maxScroll));
 
         // Render
         window.clear(Color(40, 40, 40));
@@ -337,8 +353,7 @@ int main() {
         ui.drawPanelsAndHistory(
             window,
             game,
-            visibleRows
-        );
+            visibleRows);
 
         BoardRenderer::drawBoard(
             window,
@@ -350,8 +365,7 @@ int main() {
             game.selectedCol,
             squareSize,
             startX,
-            startY
-        );
+            startY);
 
         ui.drawPlayerInfo(window, game);
 
@@ -360,29 +374,25 @@ int main() {
             game.whiteCapturedPieces,
             textures,
             220.0f,
-            725.0f
-        );
+            725.0f);
 
         BoardRenderer::drawCapturedPieces(
             window,
             game.blackCapturedPieces,
             textures,
             220.0f,
-            25.0f
-        );
+            25.0f);
 
         BoardRenderer::drawCoordinates(
             window,
             font,
             squareSize,
             startX,
-            startY
-        );
+            startY);
 
         ui.drawLoadConfirmation(
             window,
-            showLoadConfirmation
-        );
+            showLoadConfirmation);
 
         window.display();
     }
