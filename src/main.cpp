@@ -19,7 +19,7 @@ int main()
 {
     // Initialize window
     RenderWindow window(
-        VideoMode({1010, 800}),
+        VideoMode({ 1010, 800 }),
         "Chess App");
 
     // Board settings
@@ -58,11 +58,9 @@ int main()
     // Main loop
     while (window.isOpen())
     {
-
         // Handle events
         while (const optional event = window.pollEvent())
         {
-
             // Close window
             if (event->is<Event::Closed>())
             {
@@ -70,7 +68,7 @@ int main()
             }
 
             // Mouse wheel scrolling
-            if (const auto *wheel = event->getIf<Event::MouseWheelScrolled>())
+            if (const auto* wheel = event->getIf<Event::MouseWheelScrolled>())
             {
                 int mouseX = wheel->position.x;
                 int mouseY = wheel->position.y;
@@ -94,19 +92,16 @@ int main()
             }
 
             // Mouse button pressed
-            if (const auto *mousePressed = event->getIf<Event::MouseButtonPressed>())
+            if (const auto* mousePressed = event->getIf<Event::MouseButtonPressed>())
             {
-
                 if (mousePressed->button == Mouse::Button::Left)
                 {
-
                     float mouseX = static_cast<float>(mousePressed->position.x);
                     float mouseY = static_cast<float>(mousePressed->position.y);
 
                     // Load confirmation dialog
                     if (showLoadConfirmation)
                     {
-
                         if (
                             mouseX >= 390.0f && mouseX <= 490.0f &&
                             mouseY >= 425.0f && mouseY <= 465.0f)
@@ -125,10 +120,22 @@ int main()
                         }
                     }
 
+                    // Pawn promotion popup
+                    else if (game.isPromotionPending)
+                    {
+                        char promotionChoice = ui.handlePromotionClick(
+                            mouseX,
+                            mouseY);
+
+                        if (promotionChoice != '.')
+                        {
+                            gameController.handlePromotion(promotionChoice);
+                        }
+                    }
+
                     // Normal game interactions
                     else
                     {
-
                         // New Game button
                         if (
                             mouseX >= 620.0f && mouseX <= 750.0f &&
@@ -172,7 +179,7 @@ int main()
                             float thumbTop =
                                 historyContentTop +
                                 (static_cast<float>(game.historyScrollOffset) / maxScroll) *
-                                    (historyContentHeight - thumbHeight);
+                                (historyContentHeight - thumbHeight);
 
                             if (
                                 mouseY >= thumbTop &&
@@ -217,26 +224,22 @@ int main()
             }
 
             // Mouse button released
-            if (const auto *mouseReleased = event->getIf<Event::MouseButtonReleased>())
+            if (const auto* mouseReleased = event->getIf<Event::MouseButtonReleased>())
             {
-
                 if (mouseReleased->button == Mouse::Button::Left)
                     game.isDraggingScrollbar = false;
             }
 
             // Mouse moved
-            if (const auto *mouseMoved = event->getIf<Event::MouseMoved>())
+            if (const auto* mouseMoved = event->getIf<Event::MouseMoved>())
             {
-
                 if (game.isDraggingScrollbar)
                 {
-
                     int totalRows = static_cast<int>(game.moveHistory.size());
                     int maxScroll = totalRows - visibleRows;
 
                     if (maxScroll > 0)
                     {
-
                         float thumbHeight = max(
                             30.0f,
                             historyContentHeight * visibleRows / totalRows);
@@ -267,13 +270,11 @@ int main()
             }
 
             // Keyboard input
-            if (const auto *keyPressed = event->getIf<Event::KeyPressed>())
+            if (const auto* keyPressed = event->getIf<Event::KeyPressed>())
             {
-
                 // Pawn promotion
                 if (game.isPromotionPending)
                 {
-
                     char promotionChoice = '.';
 
                     switch (keyPressed->code)
@@ -314,7 +315,6 @@ int main()
         // Clear saved game after game over
         if (game.gameOver && !game.saveFileCleared)
         {
-
             SaveManager::clearSavedGame();
             game.saveFileCleared = true;
 
@@ -393,6 +393,12 @@ int main()
         ui.drawLoadConfirmation(
             window,
             showLoadConfirmation);
+
+        // Draw pawn promotion popup
+        if (game.isPromotionPending)
+        {
+            ui.drawPromotionPopup(window);
+        }
 
         window.display();
     }
