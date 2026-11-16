@@ -33,6 +33,9 @@ private:
     sf::RectangleShape loadGameButton;
     sf::Text loadGameButtonText;
 
+    sf::RectangleShape claimDrawButton;
+    sf::Text claimDrawButtonText;
+
     // Move history
     sf::Text moveHistoryTitle;
     sf::Text moveNumberHeader;
@@ -91,6 +94,12 @@ public:
         sf::RenderWindow& window);
 
     char handlePromotionClick(
+        float mouseX,
+        float mouseY);
+    void drawClaimDrawButton(
+        sf::RenderWindow& window);
+
+    bool isClaimDrawButtonClicked(
         float mouseX,
         float mouseY);
 };
