@@ -44,8 +44,27 @@ UI::UI(Font &font)
       confirmLoadButton(Vector2f(100.0f, 40.0f)),
       confirmLoadText(font, "Confirm", 18),
 
-      cancelLoadButton(Vector2f(100.0f, 40.0f)),
-      cancelLoadText(font, "Cancel", 18)
+    cancelLoadButton(Vector2f(100.0f, 40.0f)),
+    cancelLoadText(font, "Cancel", 18),
+
+    // Pawn promotion popup
+    promotionOverlay(Vector2f(1010.0f, 800.0f)),
+    promotionPanel(Vector2f(520.0f, 240.0f)),
+
+    promotionTitle(font, "Choose a Promotion Piece", 26),
+    majorLabel(font, "MAJOR PIECES", 18),
+    minorLabel(font, "MINOR PIECES", 18),
+
+    queenButton(Vector2f(210.0f, 45.0f)),
+    rookButton(Vector2f(210.0f, 45.0f)),
+    bishopButton(Vector2f(210.0f, 45.0f)),
+    knightButton(Vector2f(210.0f, 45.0f)),
+
+    queenText(font, "Queen (Q)", 20),
+    rookText(font, "Rook (R)", 20),
+    bishopText(font, "Bishop (B)", 20),
+    knightText(font, "Knight (N)", 20)
+
 {
     // Player information
     blackPlayerText.setStyle(Text::Bold);
@@ -155,6 +174,53 @@ UI::UI(Font &font)
     cancelLoadText.setStyle(Text::Bold);
     cancelLoadText.setFillColor(Color::White);
     cancelLoadText.setPosition({540.0f, 433.0f});
+
+    // Pawn promotion popup
+    promotionOverlay.setFillColor(Color(0, 0, 0, 170));
+
+    promotionPanel.setPosition({ 75.0f, 280.0f });
+    promotionPanel.setFillColor(Color(55, 55, 55));
+    promotionPanel.setOutlineThickness(2.0f);
+    promotionPanel.setOutlineColor(Color::White);
+
+    promotionTitle.setStyle(Text::Bold);
+    promotionTitle.setFillColor(Color::White);
+    promotionTitle.setPosition({ 185.0f, 300.0f });
+
+    majorLabel.setStyle(Text::Bold);
+    majorLabel.setFillColor(Color(230, 200, 120));
+    majorLabel.setPosition({ 145.0f, 350.0f });
+
+    minorLabel.setStyle(Text::Bold);
+    minorLabel.setFillColor(Color(120, 190, 230));
+    minorLabel.setPosition({ 405.0f, 350.0f });
+
+    // Promotion buttons
+    queenButton.setPosition({ 105.0f, 385.0f });
+    rookButton.setPosition({ 105.0f, 440.0f });
+    bishopButton.setPosition({ 365.0f, 385.0f });
+    knightButton.setPosition({ 365.0f, 440.0f });
+
+    queenButton.setFillColor(Color(100, 100, 100));
+    rookButton.setFillColor(Color(100, 100, 100));
+    bishopButton.setFillColor(Color(100, 100, 100));
+    knightButton.setFillColor(Color(100, 100, 100));
+
+    // Promotion button labels
+    queenText.setStyle(Text::Bold);
+    rookText.setStyle(Text::Bold);
+    bishopText.setStyle(Text::Bold);
+    knightText.setStyle(Text::Bold);
+
+    queenText.setFillColor(Color::White);
+    rookText.setFillColor(Color::White);
+    bishopText.setFillColor(Color::White);
+    knightText.setFillColor(Color::White);
+
+    queenText.setPosition({ 165.0f, 395.0f });
+    rookText.setPosition({ 165.0f, 450.0f });
+    bishopText.setPosition({ 425.0f, 395.0f });
+    knightText.setPosition({ 425.0f, 450.0f });
 }
 
 void UI::drawPanelsAndHistory(
@@ -308,4 +374,58 @@ void UI::drawLoadConfirmation(
         window.draw(cancelLoadButton);
         window.draw(cancelLoadText);
     }
+}
+
+void UI::drawPromotionPopup(RenderWindow& window)
+{
+    window.draw(promotionOverlay);
+    window.draw(promotionPanel);
+
+    window.draw(promotionTitle);
+
+    window.draw(majorLabel);
+    window.draw(minorLabel);
+
+    window.draw(queenButton);
+    window.draw(rookButton);
+    window.draw(bishopButton);
+    window.draw(knightButton);
+
+    window.draw(queenText);
+    window.draw(rookText);
+    window.draw(bishopText);
+    window.draw(knightText);
+}
+
+char UI::handlePromotionClick(float mouseX, float mouseY)
+{
+    if (
+        mouseX >= 105.0f && mouseX <= 315.0f &&
+        mouseY >= 385.0f && mouseY <= 430.0f)
+    {
+        return 'Q';
+    }
+
+    if (
+        mouseX >= 105.0f && mouseX <= 315.0f &&
+        mouseY >= 440.0f && mouseY <= 485.0f)
+    {
+        return 'R';
+    }
+
+    if (
+        mouseX >= 365.0f && mouseX <= 575.0f &&
+        mouseY >= 385.0f && mouseY <= 430.0f)
+    {
+        return 'B';
+    }
+
+    if (
+        mouseX >= 365.0f && mouseX <= 575.0f &&
+        mouseY >= 440.0f && mouseY <= 485.0f)
+    {
+        return 'N';
+    }
+
+    return '.';
 }

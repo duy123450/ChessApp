@@ -52,6 +52,25 @@ private:
     sf::RectangleShape cancelLoadButton;
     sf::Text cancelLoadText;
 
+    // Pawn promotion popup
+    sf::RectangleShape promotionOverlay;
+    sf::RectangleShape promotionPanel;
+
+    sf::Text promotionTitle;
+    sf::Text majorLabel;
+    sf::Text minorLabel;
+
+    // Promotion buttons
+    sf::RectangleShape queenButton;
+    sf::RectangleShape rookButton;
+    sf::RectangleShape bishopButton;
+    sf::RectangleShape knightButton;
+
+    sf::Text queenText;
+    sf::Text rookText;
+    sf::Text bishopText;
+    sf::Text knightText;
+
 public:
     UI(sf::Font &font);
 
@@ -67,6 +86,13 @@ public:
     void drawLoadConfirmation(
         sf::RenderWindow &window,
         bool showLoadConfirmation);
+
+    void drawPromotionPopup(
+        sf::RenderWindow& window);
+
+    char handlePromotionClick(
+        float mouseX,
+        float mouseY);
 };
 
 #endif
