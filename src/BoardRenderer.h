@@ -22,7 +22,12 @@ public:
         int selectedCol,
         float squareSize,
         float startX,
-        float startY);
+        float startY,
+        bool isDraggingPiece,
+int draggedRow,
+int draggedCol,
+float dragMouseX,
+float dragMouseY);
 
     static void drawCoordinates(
         sf::RenderWindow &window,

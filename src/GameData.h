@@ -60,6 +60,14 @@ struct GameData
     bool isDraggingScrollbar = false;
     float scrollbarDragOffset = 0.0f;
 
+    bool isDraggingPiece = false;
+
+    int draggedRow = -1;
+    int draggedCol = -1;
+
+    float dragMouseX = 0.0f;
+    float dragMouseY = 0.0f;
+
     int whiteMaterial = 0;
     int blackMaterial = 0;
 

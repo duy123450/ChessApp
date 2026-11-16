@@ -58,12 +58,18 @@ void drawPieces(
     PieceTextures &textures,
     float squareSize,
     float startX,
-    float startY)
+    float startY,
+    int skipRow,
+    int skipCol)
 {
     for (int row = 0; row < 8; row++)
     {
         for (int col = 0; col < 8; col++)
         {
+
+            // Skip the piece currently being dragged
+            if (row == skipRow && col == skipCol)
+                continue;
 
             // Get the piece from the matrix
             char piece = board.squares[row][col];
