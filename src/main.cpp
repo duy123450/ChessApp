@@ -15,6 +15,38 @@
 using namespace sf;
 using namespace std;
 
+// Board position
+struct BoardPosition
+{
+    int row;
+    int col;
+};
+
+// Convert mouse coordinates into board coordinates
+optional<BoardPosition> getBoardPosition(
+    float mouseX,
+    float mouseY,
+    float startX,
+    float startY,
+    float squareSize)
+{
+    constexpr int boardSize = 8;
+
+    if (
+        mouseX < startX ||
+        mouseX >= startX + boardSize * squareSize ||
+        mouseY < startY ||
+        mouseY >= startY + boardSize * squareSize)
+    {
+        return nullopt;
+    }
+
+    int col = static_cast<int>((mouseX - startX) / squareSize);
+    int row = static_cast<int>((mouseY - startY) / squareSize);
+
+    return BoardPosition{ row, col };
+}
+
 int main()
 {
     // Initialize window
@@ -209,20 +241,21 @@ int main()
                         }
 
                         // Board click
+                        auto boardPosition = getBoardPosition(
+                            mouseX,
+                            mouseY,
+                            startX,
+                            startY,
+                            squareSize);
+
                         if (
+                            boardPosition &&
                             !showLoadConfirmation &&
                             !game.isPromotionPending &&
-                            !game.gameOver &&
-                            mouseX >= startX &&
-                            mouseX < startX + boardSize * squareSize &&
-                            mouseY >= startY &&
-                            mouseY < startY + boardSize * squareSize)
+                            !game.gameOver)
                         {
-                            int col = static_cast<int>(
-                                (mouseX - startX) / squareSize);
-
-                            int row = static_cast<int>(
-                                (mouseY - startY) / squareSize);
+                            int row = boardPosition->row;
+                            int col = boardPosition->col;
 
                             char piece = game.board.squares[row][col];
 
@@ -276,17 +309,17 @@ int main()
                         float mouseY = static_cast<float>(mouseReleased->position.y);
 
                         // Check whether the piece was released on the board
-                        if (
-                            mouseX >= startX &&
-                            mouseX < startX + boardSize * squareSize &&
-                            mouseY >= startY &&
-                            mouseY < startY + boardSize * squareSize)
-                        {
-                            int col = static_cast<int>(
-                                (mouseX - startX) / squareSize);
+                        auto boardPosition = getBoardPosition(
+                            mouseX,
+                            mouseY,
+                            startX,
+                            startY,
+                            squareSize);
 
-                            int row = static_cast<int>(
-                                (mouseY - startY) / squareSize);
+                        if (boardPosition)
+                        {
+                            int row = boardPosition->row;
+                            int col = boardPosition->col;
 
                             if (row != game.draggedRow || col != game.draggedCol)
                             {
