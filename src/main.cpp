@@ -186,8 +186,8 @@ int main()
 
                         // Load Game button
                         if (
-                            mouseX >= 880.0f && mouseX <= 990.0f &&
-                            mouseY >= 620.0f && mouseY <= 660.0f)
+                            mouseX >= 760.0f && mouseX <= 870.0f &&
+                            mouseY >= 675.0f && mouseY <= 715.0f)
                         {
                             showLoadConfirmation = true;
                         }
@@ -490,15 +490,15 @@ int main()
             window,
             game.whiteCapturedPieces,
             textures,
-            220.0f,
-            725.0f);
+            15.0f,
+            755.0f);
 
         BoardRenderer::drawCapturedPieces(
             window,
             game.blackCapturedPieces,
             textures,
-            220.0f,
-            25.0f);
+            15.0f,
+            55.0f);
 
         BoardRenderer::drawCoordinates(
             window,

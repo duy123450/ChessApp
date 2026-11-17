@@ -1,11 +1,35 @@
 
 #include "UI.h"
+#include "MoveValidator.h"
 
 #include <algorithm>
 #include <string>
 
 using namespace sf;
 using namespace std;
+
+namespace
+{
+    void centerButtonText(
+        Text& text,
+        const RectangleShape& button)
+    {
+        FloatRect bounds = text.getLocalBounds();
+
+        text.setOrigin({
+            bounds.position.x + bounds.size.x / 2.0f,
+            bounds.position.y + bounds.size.y / 2.0f
+            });
+
+        Vector2f buttonPosition = button.getPosition();
+        Vector2f buttonSize = button.getSize();
+
+        text.setPosition({
+            buttonPosition.x + buttonSize.x / 2.0f,
+            buttonPosition.y + buttonSize.y / 2.0f
+            });
+    }
+}
 
 UI::UI(Font &font)
     : font(font),
@@ -108,42 +132,42 @@ UI::UI(Font &font)
     moveHistoryPanel.setOutlineThickness(1.0f);
 
     // New Game button
-    newGameButton.setPosition({620.0f, 620.0f});
+    newGameButton.setPosition({ 620.0f, 620.0f });
     newGameButton.setFillColor(Color(181, 139, 105));
     newGameButton.setOutlineColor(Color(220, 220, 220));
     newGameButton.setOutlineThickness(1.0f);
 
     newGameButtonText.setStyle(Text::Bold);
     newGameButtonText.setFillColor(Color::White);
-    newGameButtonText.setPosition({635.0f, 630.0f});
+    centerButtonText(newGameButtonText, newGameButton);
 
     // Save Game button
-    saveGameButton.setPosition({760.0f, 620.0f});
+    saveGameButton.setPosition({ 760.0f, 620.0f });
     saveGameButton.setFillColor(Color(70, 120, 170));
     saveGameButton.setOutlineColor(Color(220, 220, 220));
     saveGameButton.setOutlineThickness(1.0f);
 
     saveGameButtonText.setStyle(Text::Bold);
     saveGameButtonText.setFillColor(Color::White);
-    saveGameButtonText.setPosition({770.0f, 630.0f});
+    centerButtonText(saveGameButtonText, saveGameButton);
+
+    // Claim Draw button
+    claimDrawButton.setPosition({ 620.0f, 675.0f });
+    claimDrawButton.setFillColor(Color(90, 90, 90));
+
+    claimDrawButtonText.setStyle(Text::Bold);
+    claimDrawButtonText.setFillColor(Color::White);
+    centerButtonText(claimDrawButtonText, claimDrawButton);
 
     // Load Game button
-    loadGameButton.setPosition({880.0f, 620.0f});
+    loadGameButton.setPosition({ 760.0f, 675.0f });
     loadGameButton.setFillColor(Color(70, 120, 170));
     loadGameButton.setOutlineColor(Color(220, 220, 220));
     loadGameButton.setOutlineThickness(1.0f);
 
     loadGameButtonText.setStyle(Text::Bold);
     loadGameButtonText.setFillColor(Color::White);
-    loadGameButtonText.setPosition({890.0f, 630.0f});
-
-    // Draw claim button
-    claimDrawButton.setPosition({ 620.0f, 675.0f });
-    claimDrawButton.setFillColor(Color(90, 90, 90));
-
-    claimDrawButtonText.setStyle(Text::Bold);
-    claimDrawButtonText.setFillColor(Color::White);
-    claimDrawButtonText.setPosition({ 635.0f, 683.0f });
+    centerButtonText(loadGameButtonText, loadGameButton);
 
     // Move history headers
     moveHistoryTitle.setStyle(Text::Bold);
@@ -376,6 +400,26 @@ void UI::drawPlayerInfo(
         whiteAdvantageText.setString("");
         blackAdvantageText.setString("");
     }
+
+    // Update check alerts
+    bool whiteInCheck = isKingInCheck(game.board, true);
+    bool blackInCheck = isKingInCheck(game.board, false);
+
+    whitePlayerText.setString(
+        whiteInCheck
+        ? "Player 1 - White (CHECK!)"
+        : "Player 1 - White");
+
+    blackPlayerText.setString(
+        blackInCheck
+        ? "Player 2 - Black (CHECK!)"
+        : "Player 2 - Black");
+
+    whitePlayerText.setFillColor(
+        whiteInCheck ? Color(255, 100, 100) : Color::White);
+
+    blackPlayerText.setFillColor(
+        blackInCheck ? Color(255, 100, 100) : Color::White);
 
     // Draw player information
     window.draw(blackPlayerText);
