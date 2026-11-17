@@ -10,6 +10,7 @@
 #include "Board.h"
 #include "Move.h"
 
+
 struct SavedGameData
 {
     Board board;
@@ -73,6 +74,7 @@ struct GameData
 
     bool gameOver = false;
     bool saveFileCleared = false;
+    std::string gameOverMessage;
     bool whiteTurn = true;
 
     bool isPromotionPending = false;

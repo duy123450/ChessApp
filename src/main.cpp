@@ -517,6 +517,9 @@ int main()
             ui.drawPromotionPopup(window);
         }
 
+        // Draw game-over popup
+        ui.drawGameOverPopup(window, game);
+
         window.display();
     }
 

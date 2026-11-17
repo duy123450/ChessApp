@@ -54,6 +54,23 @@ void addMoveToHistory(
     }
 }
 
+string getGameOverMessage(const GameState& state, bool whiteWon)
+{
+    if (state.isCheckmate)
+        return whiteWon ? "Checkmate! White wins." : "Checkmate! Black wins.";
+
+    if (state.isStalemate)
+        return "Draw by stalemate!";
+
+    if (state.isDrawByInsufficientMaterial)
+        return "Draw by insufficient material!";
+
+    if (state.isDrawBySeventyFiveMoveRule)
+        return "Draw by the 75-move rule!";
+
+    return "";
+}
+
 Game::Game(GameData &gameData)
     : data(gameData)
 {
@@ -93,6 +110,7 @@ void Game::reset()
 
     data.gameOver = false;
     data.saveFileCleared = false;
+    data.gameOverMessage.clear();
     data.whiteTurn = true;
 
     data.positionOccurrences.clear();
@@ -153,7 +171,17 @@ void Game::handlePromotion(char promotionChoice)
 
     // Update the game-over state after promotion.
     if (state.isGameOver)
+    {
         data.gameOver = true;
+
+        bool whiteWon =
+            data.pendingMovedPiece >= 'A' &&
+            data.pendingMovedPiece <= 'Z';
+
+        data.gameOverMessage = getGameOverMessage(
+            state,
+            whiteWon);
+    }
 
     if (state.isCheckmate)
         cout << "Checkmate!\n";
@@ -184,6 +212,8 @@ void Game::handleDrawClaim(char key)
         if (data.board.halfMoveClock >= 100)
         {
             data.gameOver = true;
+            data.gameOverMessage = "Draw by the 50-move rule!";
+
             cout << "Draw claimed by the 50-move rule!" << '\n';
         }
     }
@@ -197,6 +227,8 @@ void Game::handleDrawClaim(char key)
         if (data.positionOccurrences[currentPosition] >= 3)
         {
             data.gameOver = true;
+            data.gameOverMessage = "Draw by threefold repetition!";
+
             cout << "Draw claimed by threefold repetition!" << '\n';
         }
     }
@@ -459,7 +491,15 @@ void Game::handleBoardClick(int row, int col)
                         opponentIsWhite);
 
                     if (state.isGameOver)
+                    {
                         data.gameOver = true;
+
+                        bool whiteWon = movedPiece >= 'A' && movedPiece <= 'Z';
+
+                        data.gameOverMessage = getGameOverMessage(
+                            state,
+                            whiteWon);
+                    }
 
                     string notation = getMoveNotation(
                         movedPiece,
@@ -487,6 +527,8 @@ void Game::handleBoardClick(int row, int col)
                     if (state.isDrawBySeventyFiveMoveRule)
                     {
                         data.gameOver = true;
+                        data.gameOverMessage = "Draw by the 75-move rule!";
+
                         cout << "Draw by the 75-move rule!" << '\n';
                     }
 

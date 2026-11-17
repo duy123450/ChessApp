@@ -74,6 +74,13 @@ private:
     sf::Text bishopText;
     sf::Text knightText;
 
+    // Game-over popup
+    sf::RectangleShape gameOverOverlay;
+    sf::RectangleShape gameOverPanel;
+
+    sf::Text gameOverText;
+    sf::Text gameOverSubtitle;
+
 public:
     UI(sf::Font &font);
 
@@ -102,6 +109,10 @@ public:
     bool isClaimDrawButtonClicked(
         float mouseX,
         float mouseY);
+
+    void drawGameOverPopup(
+        sf::RenderWindow& window,
+        const GameData& game);
 };
 
 #endif
