@@ -1,5 +1,6 @@
 
 #include "BoardRenderer.h"
+#include "MoveValidator.h"
 
 #include <string>
 
@@ -40,6 +41,39 @@ void BoardRenderer::drawBoard(
 
             window.draw(square);
         }
+    }
+
+    // Highlight kings that are in check
+    sf::RectangleShape checkHighlight(
+        sf::Vector2f(squareSize, squareSize));
+
+    checkHighlight.setFillColor(sf::Color(255, 0, 0, 110));
+    checkHighlight.setOutlineColor(sf::Color::Red);
+    checkHighlight.setOutlineThickness(-3.0f);
+
+    int kingRow = -1;
+    int kingCol = -1;
+
+    if (isKingInCheck(board, true) &&
+        findKing(board, true, kingRow, kingCol))
+    {
+        checkHighlight.setPosition({
+            startX + kingCol * squareSize,
+            startY + kingRow * squareSize
+            });
+
+        window.draw(checkHighlight);
+    }
+
+    if (isKingInCheck(board, false) &&
+        findKing(board, false, kingRow, kingCol))
+    {
+        checkHighlight.setPosition({
+            startX + kingCol * squareSize,
+            startY + kingRow * squareSize
+            });
+
+        window.draw(checkHighlight);
     }
 
     // Highlight selected square
