@@ -111,14 +111,15 @@ void Game::reset()
     cout << "New game started!" << '\n';
 }
 
+
 void Game::handlePromotion(char promotionChoice)
 {
     if (!data.isPromotionPending)
         return;
 
     char promotedPiece = data.promotionIsWhite
-                             ? promotionChoice
-                             : static_cast<char>(promotionChoice + ('a' - 'A'));
+        ? promotionChoice
+        : static_cast<char>(promotionChoice + ('a' - 'A'));
 
     data.board.squares[data.promotionRow][data.promotionCol] =
         promotedPiece;
@@ -150,8 +151,18 @@ void Game::handlePromotion(char promotionChoice)
 
     cout << notation << '\n';
 
+    // Update the game-over state after promotion.
+    if (state.isGameOver)
+        data.gameOver = true;
+
+    if (state.isCheckmate)
+        cout << "Checkmate!\n";
+
     if (state.isStalemate)
         cout << "Stalemate!\n";
+
+    if (state.isDrawByInsufficientMaterial)
+        cout << "Draw by insufficient material!\n";
 
     data.isPromotionPending = false;
     data.promotionRow = -1;
@@ -161,6 +172,7 @@ void Game::handlePromotion(char promotionChoice)
 
     data.positionOccurrences[getPositionKey(data.board, data.whiteTurn)]++;
 }
+
 
 void Game::handleDrawClaim(char key)
 {
