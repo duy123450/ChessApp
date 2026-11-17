@@ -66,7 +66,12 @@ UI::UI(Font &font)
     queenText(font, "Queen (Q)", 20),
     rookText(font, "Rook (R)", 20),
     bishopText(font, "Bishop (B)", 20),
-    knightText(font, "Knight (N)", 20)
+    knightText(font, "Knight (N)", 20),
+
+    gameOverOverlay(Vector2f(1010.0f, 800.0f)),
+    gameOverPanel(Vector2f(560.0f, 180.0f)),
+    gameOverText(font, "", 30),
+    gameOverSubtitle(font, "Start a new game to play again.", 18)
 
 {
     // Player information
@@ -232,6 +237,19 @@ UI::UI(Font &font)
     rookText.setPosition({ 165.0f, 450.0f });
     bishopText.setPosition({ 425.0f, 395.0f });
     knightText.setPosition({ 425.0f, 450.0f });
+
+    // Game-over popup
+    gameOverOverlay.setFillColor(Color(0, 0, 0, 160));
+
+    gameOverPanel.setPosition({ 225.0f, 310.0f });
+    gameOverPanel.setFillColor(Color(55, 55, 55));
+    gameOverPanel.setOutlineColor(Color(220, 217, 181));
+    gameOverPanel.setOutlineThickness(2.0f);
+
+    gameOverText.setStyle(Text::Bold);
+    gameOverText.setFillColor(Color::White);
+
+    gameOverSubtitle.setFillColor(Color(220, 220, 220));
 }
 
 void UI::drawPanelsAndHistory(
@@ -452,4 +470,40 @@ bool UI::isClaimDrawButtonClicked(float mouseX, float mouseY)
     return (
         mouseX >= 620.0f && mouseX <= 750.0f &&
         mouseY >= 675.0f && mouseY <= 715.0f);
+}
+
+void UI::drawGameOverPopup(
+    RenderWindow& window,
+    const GameData& game)
+{
+    if (!game.gameOver)
+        return;
+
+    window.draw(gameOverOverlay);
+    window.draw(gameOverPanel);
+
+    gameOverText.setString(game.gameOverMessage);
+
+    // Center the result text.
+    FloatRect textBounds = gameOverText.getLocalBounds();
+
+    gameOverText.setOrigin({
+        textBounds.position.x + textBounds.size.x / 2.0f,
+        textBounds.position.y + textBounds.size.y / 2.0f
+        });
+
+    gameOverText.setPosition({ 505.0f, 375.0f });
+
+    // Center the subtitle.
+    FloatRect subtitleBounds = gameOverSubtitle.getLocalBounds();
+
+    gameOverSubtitle.setOrigin({
+        subtitleBounds.position.x + subtitleBounds.size.x / 2.0f,
+        subtitleBounds.position.y + subtitleBounds.size.y / 2.0f
+        });
+
+    gameOverSubtitle.setPosition({ 505.0f, 435.0f });
+
+    window.draw(gameOverText);
+    window.draw(gameOverSubtitle);
 }
