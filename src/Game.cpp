@@ -87,6 +87,9 @@ void Game::reset()
     data.selectedCol = -1;
     data.possibleMoves.clear();
 
+    data.hasLastMove = false;
+    data.lastMove = Move{};
+
     data.whiteCapturedPieces.clear();
     data.blackCapturedPieces.clear();
 
@@ -262,7 +265,7 @@ void Game::handleBoardClick(int row, int col)
                         r,
                         c};
 
-                    if (isValidMove(board, move))
+                    if (isValidMove(board, move)) 
                         data.possibleMoves.push_back(move);
                 }
             }
@@ -321,6 +324,9 @@ void Game::handleBoardClick(int row, int col)
 
             if (isValidMove(board, move))
             {
+                data.lastMove = move;
+                data.hasLastMove = true;
+
                 bool opponentIsWhite =
                     selectedPiece >= 'a' && selectedPiece <= 'z';
 

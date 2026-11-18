@@ -17,6 +17,9 @@ struct SavedGameData
 
     bool whiteTurn = true;
 
+    bool hasLastMove = false;
+    Move lastMove{};
+
     std::vector<char> whiteCapturedPieces;
     std::vector<char> blackCapturedPieces;
 
@@ -49,6 +52,9 @@ struct GameData
     int selectedCol = -1;
 
     std::vector<Move> possibleMoves;
+
+    bool hasLastMove = false;
+    Move lastMove{};
 
     std::vector<char> whiteCapturedPieces;
     std::vector<char> blackCapturedPieces;

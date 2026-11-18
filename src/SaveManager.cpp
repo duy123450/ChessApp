@@ -124,7 +124,7 @@ void SaveManager::saveGame(const GameData &game)
     }
 
     file << "========== CHESS SAVE FILE ==========\n";
-    file << "Version: 1\n\n";
+    file << "Version: 2\n\n";
 
     file << "========== BOARD ==========\n";
 
@@ -159,6 +159,13 @@ void SaveManager::saveGame(const GameData &game)
 
     file << "\n========== GAME TURN ==========\n";
     file << "White Turn: " << game.whiteTurn << '\n';
+
+    file << "\n========== LAST MOVE ==========\n";
+    file << "Has Last Move: " << game.hasLastMove << '\n';
+    file << "From Row: " << game.lastMove.fromRow << '\n';
+    file << "From Column: " << game.lastMove.fromCol << '\n';
+    file << "To Row: " << game.lastMove.toRow << '\n';
+    file << "To Column: " << game.lastMove.toCol << '\n';
 
     file << "\n========== CAPTURED PIECES ==========\n";
 
@@ -245,7 +252,9 @@ bool SaveManager::loadGame(GameData &game)
 
     int version;
 
-    if (!readLabeledValue(file, "Version", version) || version != 1)
+    if (
+        !readLabeledValue(file, "Version", version) ||
+        (version != 1 && version != 2))
     {
         cout << "Unsupported save file version!" << '\n';
         return false;
@@ -369,6 +378,42 @@ bool SaveManager::loadGame(GameData &game)
     }
 
     data.whiteTurn = savedWhiteTurn;
+
+    if (version >= 2)
+    {
+        int hasLastMove;
+
+        if (
+            !expectLine(file, "========== LAST MOVE ==========") ||
+            !readLabeledValue(file, "Has Last Move", hasLastMove) ||
+            !readLabeledValue(file, "From Row", data.lastMove.fromRow) ||
+            !readLabeledValue(file, "From Column", data.lastMove.fromCol) ||
+            !readLabeledValue(file, "To Row", data.lastMove.toRow) ||
+            !readLabeledValue(file, "To Column", data.lastMove.toCol))
+        {
+            cout << "Invalid last move data!" << '\n';
+            return false;
+        }
+
+        if (hasLastMove != 0 && hasLastMove != 1)
+        {
+            cout << "Invalid last move flag!" << '\n';
+            return false;
+        }
+
+        data.hasLastMove = hasLastMove;
+
+        if (
+            data.hasLastMove &&
+            (data.lastMove.fromRow < 0 || data.lastMove.fromRow > 7 ||
+                data.lastMove.fromCol < 0 || data.lastMove.fromCol > 7 ||
+                data.lastMove.toRow < 0 || data.lastMove.toRow > 7 ||
+                data.lastMove.toCol < 0 || data.lastMove.toCol > 7))
+        {
+            cout << "Last move coordinates out of range!" << '\n';
+            return false;
+        }
+    }
 
     if (!expectLine(file, "========== CAPTURED PIECES =========="))
     {
@@ -595,6 +640,9 @@ bool SaveManager::loadGame(GameData &game)
     // Apply loaded data only after the complete file has been read.
     game.board = data.board;
     game.whiteTurn = data.whiteTurn;
+
+    game.hasLastMove = data.hasLastMove;
+    game.lastMove = data.lastMove;
 
     game.whiteCapturedPieces = data.whiteCapturedPieces;
     game.blackCapturedPieces = data.blackCapturedPieces;
