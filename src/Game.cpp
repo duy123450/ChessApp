@@ -34,6 +34,26 @@ int getPieceValue(char piece)
     }
 }
 
+void findPossibleMoves(
+    Board& board,
+    int fromRow,
+    int fromCol,
+    vector<Move>& possibleMoves)
+{
+    possibleMoves.clear();
+
+    for (int row = 0; row < 8; row++)
+    {
+        for (int col = 0; col < 8; col++)
+        {
+            Move move{ fromRow, fromCol, row, col };
+
+            if (isValidMove(board, move))
+                possibleMoves.push_back(move);
+        }
+    }
+}
+
 void addMoveToHistory(
     vector<pair<string, string>> &moveHistory,
     char movedPiece,
@@ -253,22 +273,11 @@ void Game::handleBoardClick(int row, int col)
             data.selectedRow = row;
             data.selectedCol = col;
 
-            data.possibleMoves.clear();
-
-            for (int r = 0; r < 8; r++)
-            {
-                for (int c = 0; c < 8; c++)
-                {
-                    Move move{
-                        data.selectedRow,
-                        data.selectedCol,
-                        r,
-                        c};
-
-                    if (isValidMove(board, move)) 
-                        data.possibleMoves.push_back(move);
-                }
-            }
+            findPossibleMoves(
+                board,
+                data.selectedRow,
+                data.selectedCol,
+                data.possibleMoves);
         }
     }
     else
@@ -296,22 +305,11 @@ void Game::handleBoardClick(int row, int col)
                 data.selectedRow = row;
                 data.selectedCol = col;
 
-                data.possibleMoves.clear();
-
-                for (int r = 0; r < 8; r++)
-                {
-                    for (int c = 0; c < 8; c++)
-                    {
-                        Move move{
-                            data.selectedRow,
-                            data.selectedCol,
-                            r,
-                            c};
-
-                        if (isValidMove(board, move))
-                            data.possibleMoves.push_back(move);
-                    }
-                }
+                findPossibleMoves(
+                    board,
+                    data.selectedRow,
+                    data.selectedCol,
+                    data.possibleMoves);
             }
         }
         else
