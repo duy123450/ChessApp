@@ -24,10 +24,12 @@ public:
         float startX,
         float startY,
         bool isDraggingPiece,
-int draggedRow,
-int draggedCol,
-float dragMouseX,
-float dragMouseY);
+        int draggedRow,
+        int draggedCol,
+        float dragMouseX,
+        float dragMouseY,
+        bool hasLastMove,
+        const Move& lastMove);
 
     static void drawCoordinates(
         sf::RenderWindow &window,

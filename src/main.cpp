@@ -481,7 +481,9 @@ int main()
             game.draggedRow,
             game.draggedCol,
             game.dragMouseX,
-            game.dragMouseY);
+            game.dragMouseY,
+            game.hasLastMove,
+            game.lastMove);
 
         ui.drawPlayerInfo(window, game);
         ui.drawClaimDrawButton(window);

@@ -19,7 +19,9 @@ void BoardRenderer::drawBoard(
     int draggedRow,
     int draggedCol,
     float dragMouseX,
-    float dragMouseY)
+    float dragMouseY,
+    bool hasLastMove,
+    const Move& lastMove)
 {
     sf::RectangleShape square(
         sf::Vector2f(squareSize, squareSize));
@@ -41,6 +43,32 @@ void BoardRenderer::drawBoard(
 
             window.draw(square);
         }
+    }
+
+    // Highlight the last move
+    if (hasLastMove)
+    {
+        sf::RectangleShape lastMoveHighlight(
+            sf::Vector2f(squareSize, squareSize));
+
+        lastMoveHighlight.setFillColor(
+            sf::Color(255, 255, 0, 85));
+
+        // Origin square
+        lastMoveHighlight.setPosition({
+            startX + lastMove.fromCol * squareSize,
+            startY + lastMove.fromRow * squareSize
+            });
+
+        window.draw(lastMoveHighlight);
+
+        // Destination square
+        lastMoveHighlight.setPosition({
+            startX + lastMove.toCol * squareSize,
+            startY + lastMove.toRow * squareSize
+            });
+
+        window.draw(lastMoveHighlight);
     }
 
     // Highlight kings that are in check
