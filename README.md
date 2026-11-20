@@ -87,21 +87,6 @@ The application supports several draw conditions:
 
 ## Screenshots
 
-Add screenshots of the application here.
-
-Suggested screenshots:
-
-| Screenshot | Description |
-|---|---|
-| Main Menu / Game Window | The main application interface |
-| Gameplay | A chess game in progress |
-| Move History | Display of previous moves |
-| Pawn Promotion | Promotion selection interface |
-| Game Over | Checkmate, stalemate, or draw state |
-| Save / Load | Game saving and loading interface |
-
-Example:
-
 <p align="center">
   <img src="assets/screenshots/gameplay.png" alt="Chess App Gameplay" width="600">
 </p>
