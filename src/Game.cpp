@@ -221,7 +221,17 @@ void Game::handlePromotion(char promotionChoice)
 
     data.whiteTurn = !data.whiteTurn;
 
-    data.positionOccurrences[getPositionKey(data.board, data.whiteTurn)]++;
+    string currentPosition = getPositionKey(data.board, data.whiteTurn);
+
+    data.positionOccurrences[currentPosition]++;
+
+    if (!data.gameOver && data.positionOccurrences[currentPosition] >= 5)
+    {
+        data.gameOver = true;
+        data.gameOverMessage = "Draw by fivefold repetition!";
+
+        cout << "Draw by fivefold repetition!" << '\n';
+    }
 }
 
 
@@ -538,7 +548,17 @@ void Game::handleBoardClick(int row, int col)
 
                     data.whiteTurn = !data.whiteTurn;
 
-                    data.positionOccurrences[getPositionKey(board, data.whiteTurn)]++;
+                    string currentPosition = getPositionKey(board, data.whiteTurn);
+
+                    data.positionOccurrences[currentPosition]++;
+
+                    if (!data.gameOver && data.positionOccurrences[currentPosition] >= 5)
+                    {
+                        data.gameOver = true;
+                        data.gameOverMessage = "Draw by fivefold repetition!";
+
+                        cout << "Draw by fivefold repetition!" << '\n';
+                    }
                 }
 
                 data.isPieceSelected = false;
